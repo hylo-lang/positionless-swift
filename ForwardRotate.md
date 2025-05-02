@@ -65,7 +65,7 @@ The remaining steps look like this:
   h i j a b c d e f|[g]
 ```
 
-The last problem is that we need to somehow reset the bisection point in the
+The last problem is that we need to **somehow** reset the bisection point in the
 whole mutated input to the one we discovered:
 
  [h i j|a b c d e f g]
@@ -86,7 +86,8 @@ the bisection point at the end.
               ^
 ```
 
-The remaining steps are:
+We also need to **somehow** reset it to its prior position to get the
+next rotate problem:
 
 ```
  d e f g h i j[b c|a]
@@ -94,8 +95,8 @@ The remaining steps are:
  d e f g h i j a b c[]|
 ```
 
-And once again we need to set the bisection point to the discovered
-one in the final result:
+And once again we need to **somehow** set the bisection point to the
+discovered one in the final result:
 
 ```
 [d e f g h i j|a b c]
