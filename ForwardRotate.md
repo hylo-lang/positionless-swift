@@ -67,9 +67,9 @@ The remaining steps look like this:
 
 The last problem is that we need to **somehow** reset the bisection point in the
 whole mutated input to the one we discovered:
-
+```
  [h i j|a b c d e f g]
-
+```
 ## Example with prefix_length < suffix_length:
 
 ```
