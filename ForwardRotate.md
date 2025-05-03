@@ -82,7 +82,7 @@ Here's where we discover the final bisection point, because after that step we h
 the bisection point at the end.
 
 ```
- d e f g h i j[b c a]|
+ d e f g h i j[a b c]|
               ^
 ```
 
@@ -90,9 +90,8 @@ We also need to **somehow** reset it to its prior position to get the
 next rotate problem:
 
 ```
- d e f g h i j[b c|a]
- d e f g h i j a[c|b]
- d e f g h i j a b c[]|
+ d e f g h i j|[a b c]
+ d e f g h i j [a b c]|
 ```
 
 And once again we need to **somehow** set the bisection point to the
