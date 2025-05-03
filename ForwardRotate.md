@@ -26,7 +26,7 @@ after one step, we get this:
 ```
 
 The first time we find the bisection point at the end (i.e. prior
-prefix_length == k) we have discovered the position of the bisection
+suffix_length == k) we have discovered the position of the bisection
 point in the result: it's the beginning of the new prefix.
 
 Also, because the bisection point reached the end, to get the new
