@@ -51,7 +51,7 @@ protocol Collection<Element>: ~Copyable {
 
   /// Returns the result of passing to `f` the partitioning of `self`
   /// whose first part is empty.
-  func withBisection<R>(_ f: (inout Bisection)->R) -> R
+  func withBisection<R>(_ f: (inout Bisection) -> R) -> R
 
   // The above could almost be modeled as:
   //   var bisection { get nonmutating set }
@@ -66,7 +66,7 @@ protocol Collection<Element>: ~Copyable {
   /// `self` is exhausted, returning `true` iff `op` ever returned
   /// `true`.
   @discardableResult
-  func forEachUntil(_ op: (borrowing Element)->Bool) -> Bool
+  func forEachUntil(_ op: (borrowing Element) -> Bool) -> Bool
 
 }
 
@@ -77,7 +77,7 @@ extension Collection {
   /// `self` is exhausted, returning `true` iff `op` ever returned
   /// `true`.
   @discardableResult
-  func forEachUntil(_ op: (borrowing Element)->Bool) -> Bool {
+  func forEachUntil(_ op: (borrowing Element) -> Bool) -> Bool {
     withBisection { p in
       while !p.suffix.isEmpty() {
         if op(p.prefix.first) { return true }
@@ -87,8 +87,11 @@ extension Collection {
   }
 
   /// Applies `op` to each element in turn.
-  func forEach(_ op: (borrowing Element)->Void) {
-    forEachUntil { op($0); return false }
+  func forEach(_ op: (borrowing Element) -> Void) {
+    forEachUntil {
+      op($0)
+      return false
+    }
   }
 
   /// Returns the number of elements.
@@ -139,7 +142,7 @@ extension SegmentedCollection {
   /// Applies `op` to each element in turn until it returns `true` or
   /// `self` is exhausted, returning `true` iff `op` ever returned `true`.
   @discardableResult
-  func forEachUntil(_ op: (borrowing Element)->Bool) -> Bool {
+  func forEachUntil(_ op: (borrowing Element) -> Bool) -> Bool {
     segments.forEachUntil {
       $0.forEachUntil(op)
     }
