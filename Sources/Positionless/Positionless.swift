@@ -110,6 +110,60 @@ extension Collection {
 
 }
 
+/// A collection bisection that can be mutated.
+protocol MutableCollectionBisection: CollectionBisection where Part: MutableCollection {
+
+  /// Swaps first element of `prefix` and `suffix`.
+  ///
+  /// - Precondition: `!parts.prefix.isEmpty() && !parts.suffix.isEmpty()`
+  mutating func swapFirstElements()
+
+  /// The parts.
+  var parts: (prefix: Part, suffix: Part) { get set }
+
+}
+
+extension MutableCollectionBisection {
+
+  /// The first part.
+  var prefix: Part {
+    _read {
+      yield parts.prefix
+    }
+    _modify {
+      yield &parts.prefix
+    }
+  }
+
+  /// The second (last) part.
+  var suffix: Part {
+    _read {
+      yield parts.suffix
+    }
+    _modify {
+      yield &parts.suffix
+    }
+  }
+
+}
+
+protocol MutableCollection<Element>: Collection {
+  /// A mutable separation of `Self` into prefix and suffix.
+  associatedtype MutableBisection: MutableCollectionBisection
+  where
+    Bisection.Part.Element == Element,
+    MutableBisection.Part.Element == Element
+
+  /// Returns the result of passing to `f` the partitioning of `self`
+  /// whose first part is empty.
+  func withMutableBisection<R>(_ f: (inout MutableBisection) -> R) -> R
+
+  /// The first element of the collection.
+  ///
+  /// - Precondition: !self.isEmpty()
+  var first: Element { get set }
+}
+
 /// A collection such as a deque, with an internally partitioned
 /// structure.
 ///
@@ -148,4 +202,10 @@ extension SegmentedCollection {
     }
   }
 
+}
+
+func myFunc<C: MutableCollection<Int>>(_ col: inout C) {
+  col.withMutableBisection { (b: inout C.MutableBisection) in
+    b.prefix.first = 4
+  }
 }
