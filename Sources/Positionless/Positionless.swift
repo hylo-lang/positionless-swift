@@ -119,7 +119,7 @@ protocol MutableCollectionBisection: CollectionBisection where Part: MutableColl
   mutating func swapFirstElements()
 
   /// The parts.
-  var parts: (prefix: Part, suffix: Part) { get set }
+  override var parts: (prefix: Part, suffix: Part) { get set }
 
 }
 
@@ -147,21 +147,11 @@ extension MutableCollectionBisection {
 
 }
 
-protocol MutableCollection<Element>: Collection {
-  /// A mutable separation of `Self` into prefix and suffix.
-  associatedtype MutableBisection: MutableCollectionBisection
-  where
-    Bisection.Part.Element == Element,
-    MutableBisection.Part.Element == Element
-
-  /// Returns the result of passing to `f` the partitioning of `self`
-  /// whose first part is empty.
-  func withMutableBisection<R>(_ f: (inout MutableBisection) -> R) -> R
-
+protocol MutableCollection<Element>: Collection where Bisection: MutableCollectionBisection {
   /// The first element of the collection.
   ///
   /// - Precondition: !self.isEmpty()
-  var first: Element { get set }
+  override var first: Element { get set }
 }
 
 /// A collection such as a deque, with an internally partitioned
