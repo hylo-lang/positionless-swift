@@ -203,9 +203,3 @@ extension SegmentedCollection {
   }
 
 }
-
-func myFunc<C: MutableCollection<Int>>(_ col: inout C) {
-  col.withMutableBisection { (b: inout C.MutableBisection) in
-    b.prefix.first = 4
-  }
-}
