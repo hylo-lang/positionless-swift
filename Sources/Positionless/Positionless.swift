@@ -1,3 +1,10 @@
+/// Denote how to mutate current bisection point from projected bisection.
+enum MutateBisectionFrom {
+  case Nothing
+  case PrefixPoint
+  case BisectionPoint
+}
+
 /// A separation of some collection into two parts: a prefix and a suffix.
 protocol CollectionBisection: ~Copyable {
 
@@ -20,8 +27,18 @@ protocol CollectionBisection: ~Copyable {
   /// encompasses all the elements.
   mutating func makeSuffixEmpty()
 
-  /// Drops the first element of the prefix.
+  /// Drops the first element of the `prefix`.
+  ///
+  /// - Precondition: `!parts.perfix.isEmpty()`
   mutating func dropPrefixFirst()
+
+  /// Executes `f` with mutable projection of `self`. If `f` returns:
+  /// - Nothing, then do nothing
+  /// - PrefixPoint, then set bisection point of `self` as of prefix point of
+  ///   projection
+  /// - BisectionPoint, then set bisection point of `self` as of bisection
+  ////  point of projection.
+  mutating func adoptBisection(from f: (inout Self) -> MutateBisectionFrom)
 
 }
 
