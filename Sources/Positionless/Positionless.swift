@@ -12,11 +12,16 @@ protocol CollectionBisection: ~Copyable {
   /// - Precondition: `!parts.suffix.isEmpty()`
   mutating func growPrefixBy1()
 
-  /// Make prefix empty by moving all elements to suffix.
+  /// Adjusts part boundaries so `prefix` is empty and `suffix`
+  /// encompasses all the elements.
   mutating func makePrefixEmpty()
 
-  /// Make suffix empty by moving all elements to prefix.
+  /// Adjusts part boundaries so `suffix` is empty and `prefix`
+  /// encompasses all the elements.
   mutating func makeSuffixEmpty()
+
+  /// Drops the first element of the prefix.
+  mutating func dropPrefixFirst()
 
 }
 
