@@ -64,8 +64,8 @@ extension Collection {
   @discardableResult
   func forEachUntil(_ op: (borrowing Element) -> Bool) -> Bool {
     partition(into: 2) { p in
-      while !p.parts[p.partitionCount - 1].isEmpty() {
-        if op(p.parts[p.partitionCount - 1].first) { return true }
+      while !p.parts.last!.isEmpty() {
+        if op(p.parts.last!.first) { return true }
         p.grow(part: 0)
       }
       return false
