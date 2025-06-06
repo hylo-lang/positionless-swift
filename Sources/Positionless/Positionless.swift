@@ -1,34 +1,25 @@
-/// A separation of some collection into two parts: a prefix and a suffix.
-protocol CollectionBisection: ~Copyable {
+/// A separation of some collection into multiple contiguous partitions.
+protocol CollectionPartition: ~Copyable {
 
   /// The type of each part.
   associatedtype Part: Collection
 
-  /// The parts.
-  var parts: (prefix: Part, suffix: Part) { get }
-
-  /// Increments the size of `prefix` and decrements the size of `suffix`.
+  /// Number of partitions.
   ///
-  /// - Precondition: `!parts.suffix.isEmpty()`
-  mutating func growPrefixBy1()
+  /// Invariant: `partitionCount >= 1`.
+  var partitionCount: Int { get }
 
-}
+  /// The parts.
+  ///
+  /// Invariant: `parts.count() == partitionCount`
+  var parts: [Part] { get }
 
-extension CollectionBisection {
-
-  /// The first part.
-  var prefix: Part {
-    _read {
-      yield parts.prefix
-    }
-  }
-
-  /// The second (last) part.
-  var suffix: Part {
-    _read {
-      yield parts.suffix
-    }
-  }
+  /// Increments the size of `i`th part by 1 and decrements the size of `i + 1`th part by 1.
+  ///
+  /// - Precondition:
+  ///   - `i < partitionCount - 1`
+  ///   - `!parts[i + 1].isEmpty()`
+  mutating func grow(part i: Int)
 
 }
 
@@ -39,7 +30,7 @@ protocol Collection<Element>: ~Copyable {
   associatedtype Element
 
   /// A separation of `Self` into prefix and suffix parts.
-  associatedtype Bisection: CollectionBisection where Bisection.Part.Element == Element
+  associatedtype Partition: CollectionPartition where Partition.Part.Element == Element
 
   /// True iff `self` is empty.
   func isEmpty() -> Bool
@@ -50,14 +41,8 @@ protocol Collection<Element>: ~Copyable {
   var first: Element { get }
 
   /// Returns the result of passing to `f` the partitioning of `self`
-  /// whose first part is empty.
-  func withBisection<R>(_ f: (inout Bisection)->R) -> R
-
-  // The above could almost be modeled as:
-  //   var bisection { get nonmutating set }
-  //
-  // What we'd like is to project a mutable instance of Bisection
-  // (which doesn't allow element mutation) from an immutable collection.
+  /// whose last part contains all elements and other parts are empty.
+  func partition<R>(into partitionCount: Int, _ f: (inout Partition) -> R) -> R
 
   /// Returns the number of elements.
   func count() -> Int
@@ -66,7 +51,7 @@ protocol Collection<Element>: ~Copyable {
   /// `self` is exhausted, returning `true` iff `op` ever returned
   /// `true`.
   @discardableResult
-  func forEachUntil(_ op: (borrowing Element)->Bool) -> Bool
+  func forEachUntil(_ op: (borrowing Element) -> Bool) -> Bool
 
 }
 
@@ -77,18 +62,22 @@ extension Collection {
   /// `self` is exhausted, returning `true` iff `op` ever returned
   /// `true`.
   @discardableResult
-  func forEachUntil(_ op: (borrowing Element)->Bool) -> Bool {
-    withBisection { p in
-      while !p.suffix.isEmpty() {
-        if op(p.prefix.first) { return true }
+  func forEachUntil(_ op: (borrowing Element) -> Bool) -> Bool {
+    partition(into: 2) { p in
+      while !p.parts[p.partitionCount - 1].isEmpty() {
+        if op(p.parts[p.partitionCount - 1].first) { return true }
+        p.grow(part: 0)
       }
       return false
     }
   }
 
   /// Applies `op` to each element in turn.
-  func forEach(_ op: (borrowing Element)->Void) {
-    forEachUntil { op($0); return false }
+  func forEach(_ op: (borrowing Element) -> Void) {
+    forEachUntil {
+      op($0)
+      return false
+    }
   }
 
   /// Returns the number of elements.
@@ -139,7 +128,7 @@ extension SegmentedCollection {
   /// Applies `op` to each element in turn until it returns `true` or
   /// `self` is exhausted, returning `true` iff `op` ever returned `true`.
   @discardableResult
-  func forEachUntil(_ op: (borrowing Element)->Bool) -> Bool {
+  func forEachUntil(_ op: (borrowing Element) -> Bool) -> Bool {
     segments.forEachUntil {
       $0.forEachUntil(op)
     }
