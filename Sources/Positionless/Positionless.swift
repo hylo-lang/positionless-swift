@@ -21,6 +21,26 @@ protocol CollectionPartition: ~Copyable {
   ///   - `!parts[i + 1].isEmpty()`
   mutating func grow(part i: Int)
 
+  /// Make the `i - 1`th part empty and takes all element into part `i`.
+  ///
+  /// - Precondition: `i > 0`.
+  mutating func absorbAllFromLeft(into i: Int)
+
+  /// Make the `i + 1`th part empty and takes all element into part `i`.
+  ///
+  /// - Precondition: `i < partitionCount - 1`.
+  mutating func absorbAllFromRight(into i: Int)
+
+  /// Make the `i`th part empty and takes all element into part `i - 1`.
+  ///
+  /// - Precondition: `i > 0`.
+  mutating func transferAllToLeft(from i: Int)
+
+  /// Make the `i`th part empty and takes all element into part `i + 1`.
+  ///
+  /// - Precondition: `i < partitionCount - 1`.
+  mutating func transferAllToRight(from i: Int)
+
 }
 
 /// A multi-pass sequence of `Element`s.
