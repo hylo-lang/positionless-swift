@@ -24,22 +24,22 @@ protocol CollectionPartition: ~Copyable {
   /// Make the `i - 1`th part empty and takes all element into part `i`.
   ///
   /// - Precondition: `i > 0`.
-  mutating func absorbAllFromLeft(into i: Int)
+  mutating func absorbAllFromPrev(into i: Int)
 
   /// Make the `i + 1`th part empty and takes all element into part `i`.
   ///
   /// - Precondition: `i < partitionCount - 1`.
-  mutating func absorbAllFromRight(into i: Int)
+  mutating func absorbAllFromNext(into i: Int)
 
   /// Make the `i`th part empty and takes all element into part `i - 1`.
   ///
   /// - Precondition: `i > 0`.
-  mutating func transferAllToLeft(from i: Int)
+  mutating func transferAllToPrev(from i: Int)
 
   /// Make the `i`th part empty and takes all element into part `i + 1`.
   ///
   /// - Precondition: `i < partitionCount - 1`.
-  mutating func transferAllToRight(from i: Int)
+  mutating func transferAllToNext(from i: Int)
 
   /// Calls `f` with a "copy" of `self`.
   func withCopy<R>(_ f: (inout Self) -> R) -> R
