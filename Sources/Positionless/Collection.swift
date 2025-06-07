@@ -11,7 +11,7 @@ protocol CollectionPartition: ~Copyable {
 
   /// The parts.
   ///
-  /// Invariant: `parts.count() == partitionCount`
+  /// Invariant: `parts.count == partitionCount`
   var parts: [Part] { get }
 
   /// Increments the size of `i`th part by 1 and decrements the size of `i + 1`th part by 1.
@@ -85,113 +85,5 @@ protocol Collection<Element>: ~Copyable {
   /// `true`.
   @discardableResult
   func forEachUntil(_ op: (borrowing Element) -> Bool) -> Bool
-
-}
-
-/// Algorithms
-extension Collection {
-
-  /// Applies `op` to each element in turn until it returns `true` or
-  /// `self` is exhausted, returning `true` iff `op` ever returned
-  /// `true`.
-  @discardableResult
-  func forEachUntil(_ op: (borrowing Element) -> Bool) -> Bool {
-    partition(into: 2) { p in
-      while !p.parts.last!.isEmpty() {
-        if op(p.parts.last!.first) { return true }
-        p.grow(part: 0)
-      }
-      return false
-    }
-  }
-
-  /// Applies `op` to each element in turn.
-  func forEach(_ op: (borrowing Element) -> Void) {
-    forEachUntil {
-      op($0)
-      return false
-    }
-  }
-
-  /// Returns the number of elements.
-  func count() -> Int {
-    var r = 0
-    forEach { _ in r += 1 }
-    return r
-  }
-
-  /// `combine`s each element in turn with `r`.
-  func reduce<T: ~Copyable>(into r: inout T, combine: (inout T, borrowing Element) -> Void) {
-    forEach {
-      combine(&r, $0)
-    }
-  }
-
-}
-
-/// Mutable partitions of collection.
-protocol MutableCollectionPartition: CollectionPartition
-where Part: MutableCollection {
-
-  /// Swaps first element partition i and j.
-  ///
-  /// - Precondition: `i >= 0 && j >= 0 && i < partitionCount && j < partitionCount`.
-  mutating func swapFirst(_ i: Int, _ j: Int)
-
-  /// The parts.
-  ///
-  /// Invariant: `parts.count() == partitionCount`
-  var parts: [Part] { get set }
-
-}
-
-/// A collection that supports mutation of elements.
-protocol MutableCollection: Collection
-where Partition: MutableCollectionPartition {
-
-  /// The first element of the collection.
-  ///
-  /// - Precondition: !self.isEmpty()
-  var first: Element { get set }
-
-}
-
-/// A collection such as a deque, with an internally partitioned
-/// structure.
-///
-/// It can be advantageous to operate on each partition of such a
-/// collection independently.
-protocol SegmentedCollection<Element>: Collection<Self.Element>, ~Copyable {
-
-  /// A single partition.
-  associatedtype Segment: Collection<Element>
-
-  /// All the partitions.
-  associatedtype Segments: Collection<Segment>
-
-  /// The abutting partitions.
-  var segments: Segments { get }
-
-}
-
-extension SegmentedCollection {
-
-  /// Returns the number of elements.
-  func count() -> Int {
-    var r = 0
-    segments.reduce(into: &r) { r, s in
-      r += s.count()
-    }
-    return r
-  }
-
-  /// Applies `op` to each element in turn until it returns `true` or
-  /// `self` is exhausted, returning `true` iff `op` ever returned `true`.
-  @discardableResult
-  func forEachUntil(_ op: (borrowing Element) -> Bool) -> Bool {
-    segments.forEachUntil {
-      $0.forEachUntil(op)
-    }
-  }
 
 }
