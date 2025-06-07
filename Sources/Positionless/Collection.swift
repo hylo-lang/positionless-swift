@@ -49,7 +49,7 @@ protocol CollectionPartition: ~Copyable {
   /// of additional parts.
   ///
   /// - Precondition: `n >= 0`.
-  func withAdditionalParts<R>(_ n: Int, _ f: (inout Self) -> R) -> R
+  mutating func withAdditionalParts<R>(_ n: Int, _ f: (inout Self) -> R) -> R
 
 }
 
@@ -74,13 +74,7 @@ protocol Collection<Element>: ~Copyable {
   /// whose last part contains all elements and other parts are empty.
   func partition<R>(into partitionCount: Int, _ f: (inout Partition) -> R) -> R
 
-  /// Returns the number of elements.
-  func count() -> Int
-
-  /// Applies `op` to each element in turn until it returns `true` or
-  /// `self` is exhausted, returning `true` iff `op` ever returned
-  /// `true`.
-  @discardableResult
-  func forEachUntil(_ op: (borrowing Element) -> Bool) -> Bool
+  /// Number of elements.
+  var count: Int { get }
 
 }

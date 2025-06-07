@@ -7,11 +7,6 @@ where Part: MutableCollection {
   /// - Precondition: `i >= 0 && j >= 0 && i < partitionCount && j < partitionCount`.
   mutating func swapFirst(_ i: Int, _ j: Int)
 
-  /// The parts.
-  ///
-  /// Invariant: `parts.count() == partitionCount`
-  var parts: [Part] { get set }
-
 }
 
 /// A collection that supports mutation of elements.

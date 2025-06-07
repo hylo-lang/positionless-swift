@@ -9,9 +9,9 @@ extension MutableCollectionPartition {
   /// - Complexity: O(n) where `n == parts[0].count + parts[1].count`.
   mutating func rotate() {
     withAdditionalParts(2) { p in
-      transferAllToNext(from: 1)
-      transferAllToNext(from: 2)
-      transferAllToNext(from: 0)
+      p.transferAllToNext(from: 1)
+      p.transferAllToNext(from: 2)
+      p.transferAllToNext(from: 0)
       p.rotateQuadrisection()
     }
   }
