@@ -41,6 +41,19 @@ protocol CollectionPartition: ~Copyable {
   /// - Precondition: `i < partitionCount - 1`.
   mutating func transferAllToRight(from i: Int)
 
+  /// Calls `f` with a "copy" of `self`.
+  func withCopy<R>(_ f: (inout Self) -> R) -> R
+
+  /// Adds an empty partition just after `i`th partition.
+  ///
+  /// Postcondition: `partitionCount` is increased by 1.
+  mutating func addPartition(after i: Int)
+
+  /// Merges `i + 1`th partition (if exists) into partition `i`.
+  ///
+  /// Postcondition: `partitionCount` is decreased by 1.
+  mutating func mergeNextPartition(into i: Int)
+
 }
 
 /// A multi-pass sequence of `Element`s.
