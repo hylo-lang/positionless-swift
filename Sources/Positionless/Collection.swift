@@ -51,6 +51,10 @@ protocol CollectionPartition: ~Copyable {
   /// - Precondition: `n >= 0`.
   mutating func withAdditionalParts<R>(_ n: Int, _ f: (inout Self) -> R) -> R
 
+  /// Calls `f` with a partition that is a copy of `self`.
+  /// Returns the result of compuatation of `f`.
+  func withCopy<R>(_ f: (inout Self) -> R) -> R
+
 }
 
 /// A multi-pass sequence of `Element`s.

@@ -79,7 +79,7 @@ extension MutableCollectionPartition {
     //
     // First case:
     // [h i j | a b c d | _ | e f g]
-    withAdditionalParts(0) { $0.rotateQuadrisection() }
+    withCopy { $0.rotateQuadrisection() }
   }
 
 }
