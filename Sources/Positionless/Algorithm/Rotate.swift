@@ -8,14 +8,12 @@ extension MutableCollectionPartition {
   /// - Postcondition: `partitionCount == 2`
   /// - Complexity: O(n) where `n == parts[0].count + parts[1].count`.
   mutating func rotate() {
-    addPartition(after: 1)
-    addPartition(after: 2)
-    transferAllToNext(from: 1)
-    transferAllToNext(from: 2)
-    transferAllToNext(from: 0)
-    rotateQuadrisection()
-    mergeNextPartition(into: 2)
-    mergeNextPartition(into: 1)
+    withAdditionalParts(2) { p in
+      transferAllToNext(from: 1)
+      transferAllToNext(from: 2)
+      transferAllToNext(from: 0)
+      p.rotateQuadrisection()
+    }
   }
 
   /// Assumes quadrisection of following form:
@@ -81,7 +79,7 @@ extension MutableCollectionPartition {
     //
     // First case:
     // [h i j | a b c d | _ | e f g]
-    withCopy { $0.rotateQuadrisection() }
+    withAdditionalParts(0) { $0.rotateQuadrisection() }
   }
 
 }

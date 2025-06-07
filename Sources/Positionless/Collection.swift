@@ -41,18 +41,15 @@ protocol CollectionPartition: ~Copyable {
   /// - Precondition: `i < partitionCount - 1`.
   mutating func transferAllToNext(from i: Int)
 
-  /// Calls `f` with a "copy" of `self`.
-  func withCopy<R>(_ f: (inout Self) -> R) -> R
-
-  /// Adds an empty partition just after `i`th partition.
+  /// Calls `f` with a partition that has parts same as self with `n` extra
+  /// empty partitions at the end. Returns the result of computation of `f`.
   ///
-  /// Postcondition: `partitionCount` is increased by 1.
-  mutating func addPartition(after i: Int)
-
-  /// Merges `i + 1`th partition (if exists) into partition `i`.
+  /// The shape of `self` becomes similar to shape of partition with which
+  /// `f` was called, except the last part of `self` also contains elements
+  /// of additional parts.
   ///
-  /// Postcondition: `partitionCount` is decreased by 1.
-  mutating func mergeNextPartition(into i: Int)
+  /// - Precondition: `n >= 0`.
+  func withAdditionalParts<R>(_ n: Int, _ f: (inout Self) -> R) -> R
 
 }
 
