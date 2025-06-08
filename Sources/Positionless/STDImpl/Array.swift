@@ -50,6 +50,10 @@ struct ArrayPartition<Element>: CollectionPartition {
     partitionStartIndexes[i + 1] = partitionStartIndexes[i]
   }
 
+  mutating func grow(part i: Int, by n: Int) {
+    partitionStartIndexes[i + 1] += n
+  }
+
 }
 
 /// A part of ArrayPartition.
