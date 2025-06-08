@@ -45,7 +45,7 @@ protocol MutableCollection: Collection {
 
   /// Returns the result of passing to `f` the partitioning of `self`
   /// whose last part contains all elements and other parts are empty.
-  func withMutablePartition<R>(
+  mutating func withMutablePartition<R>(
     into partitionCount: Int,
     _ f: (inout MutablePartition) -> R
   ) -> R
