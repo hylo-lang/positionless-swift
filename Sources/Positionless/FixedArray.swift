@@ -11,6 +11,12 @@ struct FixedArray<Element> {
   /// Number of elements in array.
   public var count: Int { storage.count }
 
+  /// First element
+  public var first: Element? { storage.first }
+
+  /// Last element
+  public var last: Element? { storage.first }
+
   /// Access individual elements.
   public subscript(index: Int) -> Element {
     get { storage[index] }

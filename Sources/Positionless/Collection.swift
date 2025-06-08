@@ -12,7 +12,10 @@ protocol CollectionPartition: ~Copyable {
   /// The parts.
   ///
   /// Invariant: `parts.count == partitionCount`
-  var parts: [Part] { get }
+  var parts: FixedArray<Part> { get }
+
+  /// `i`th part.
+  subscript(_ i: Int) -> Part { get }
 
   /// Increments the size of `i`th part by 1 and decrements the size of `i + 1`th part by 1.
   ///
