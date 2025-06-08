@@ -15,7 +15,7 @@ struct ArrayPartition<Element>: CollectionPartition {
 
   typealias Part = ArrayPart<Element>
 
-  var partitionCount: Int { storage.count - 1 }
+  var partitionCount: Int { partitionStartIndexes.count - 1 }
 
   var parts: FixedArray<ArrayPart<Element>> {
     _read {
@@ -112,7 +112,7 @@ struct MutableArrayPartition<Element>: MutableCollectionPartition {
 
   typealias Part = MutableArrayPart<Element>
 
-  var partitionCount: Int { storage.count - 1 }
+  var partitionCount: Int { partitionStartIndexes.count - 1 }
 
   var parts: FixedArray<MutableArrayPart<Element>> {
     _read {
