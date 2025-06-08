@@ -13,7 +13,7 @@ where Part: MutableCollection {
   var parts: FixedArray<Part> { get set }
 
   /// `i`th part.
-  subscript(_ i: Int) -> Part { get set }
+  subscript(part i: Int) -> Part { get set }
 
   /// Calls `f` with a partition that has parts same as self with `n` extra
   /// empty partitions at the end. Returns the result of computation of `f`.

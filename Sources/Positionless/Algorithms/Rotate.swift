@@ -28,13 +28,13 @@ extension MutableCollectionPartition {
   /// elements of second half in order.
   private mutating func rotateQuadrisection() {
     // Handle base cases.
-    if parts[3].isEmpty() {
+    if self[part: 3].isEmpty() {
       transferAllToNext(from: 0)
       transferAllToNext(from: 1)
       transferAllToNext(from: 2)
       return
     }
-    if parts[1].isEmpty() {
+    if self[part: 1].isEmpty() {
       transferAllToPrev(from: 3)
       transferAllToPrev(from: 2)
       transferAllToPrev(from: 1)
@@ -44,7 +44,7 @@ extension MutableCollectionPartition {
     // We have 2 regions of possibly-unequal lengths parts[1] and parts[3].
     //
     // [_ | a b c d e f g | _ | h i j]   or   [_ | a b c | _ | d e f g h i j]
-    while !parts[3].isEmpty() {
+    while !self[part: 3].isEmpty() {
       // Exchange the leading elements parts[1] and part[3] by
       //  - putting exchanged part[3] elements in part[0]
       //  - putting exchanged part[1] elements in part[2]
@@ -54,7 +54,7 @@ extension MutableCollectionPartition {
       grow(part: 0)
       grow(part: 2)
 
-      if parts[1].isEmpty() {
+      if self[part: 1].isEmpty() {
         // Second case:
         //
         // More elements from parts[3] needs to be in parts[0]. Thus make the
