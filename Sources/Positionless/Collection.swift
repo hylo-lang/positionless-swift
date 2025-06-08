@@ -46,6 +46,27 @@ protocol CollectionPartition: ~Copyable {
 
 }
 
+extension CollectionPartition {
+
+  /// Increments the size of `i`th part by `n` and decrements the size of
+  /// `i + 1`th part by `n`.
+  ///
+  /// - Precondition:
+  ///   - `i < partitionCount - 1`
+  ///   - `!parts[i + 1].count >= n`
+  ///   - `n >= 0`
+  ///
+  /// - Complexity:
+  ///   - O(1) for RandomAccessCollection
+  ///   - O(n) otherwise.
+  mutating func grow(part i: Int, by n: Int) {
+    for _ in 0..<n {
+      grow(part: i)
+    }
+  }
+
+}
+
 /// A multi-pass sequence of `Element`s.
 protocol Collection<Element>: ~Copyable {
 
