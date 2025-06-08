@@ -66,7 +66,7 @@ protocol Collection<Element>: ~Copyable {
   /// The type of contained thing.
   associatedtype Element
 
-  /// A separation of `Self` into prefix and suffix parts.
+  /// A separation of `Self` into partitions.
   associatedtype Partition: CollectionPartition where Partition.Part.Element == Element
 
   /// True iff `self` is empty.
@@ -79,7 +79,7 @@ protocol Collection<Element>: ~Copyable {
 
   /// Returns the result of passing to `f` the partitioning of `self`
   /// whose last part contains all elements and other parts are empty.
-  func partition<R>(into partitionCount: Int, _ f: (inout Partition) -> R) -> R
+  func withPartition<R>(into partitionCount: Int, _ f: (inout Partition) -> R) -> R
 
   /// Number of elements.
   var count: Int { get }

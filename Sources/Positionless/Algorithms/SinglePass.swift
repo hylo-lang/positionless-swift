@@ -6,7 +6,7 @@ extension Collection {
   /// `true`.
   @discardableResult
   func forEachUntil(_ op: (borrowing Element) -> Bool) -> Bool {
-    partition(into: 2) { p in
+    withPartition(into: 2) { p in
       while !p.parts.last!.isEmpty() {
         if op(p.parts.last!.first) { return true }
         p.grow(part: 0)
