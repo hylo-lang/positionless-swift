@@ -34,6 +34,10 @@ struct ArrayPartition<Element>: CollectionPartition {
     partitionStartIndexes[i + 1] += 1
   }
 
+  mutating func grow(part i: Int, by n: Int) {
+    partitionStartIndexes[i + 1] += n
+  }
+
   mutating func absorbAllFromPrev(into i: Int) {
     partitionStartIndexes[i] = partitionStartIndexes[i - 1]
   }
@@ -48,10 +52,6 @@ struct ArrayPartition<Element>: CollectionPartition {
 
   mutating func transferAllToNext(from i: Int) {
     partitionStartIndexes[i + 1] = partitionStartIndexes[i]
-  }
-
-  mutating func grow(part i: Int, by n: Int) {
-    partitionStartIndexes[i + 1] += n
   }
 
 }
@@ -146,6 +146,10 @@ struct MutableArrayPartition<Element>: MutableCollectionPartition {
 
   mutating func grow(part i: Int) {
     partitionStartIndexes[i + 1] += 1
+  }
+
+  mutating func grow(part i: Int, by n: Int) {
+    partitionStartIndexes[i + 1] += n
   }
 
   mutating func absorbAllFromPrev(into i: Int) {
