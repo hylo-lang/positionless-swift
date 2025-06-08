@@ -7,8 +7,8 @@ extension Collection {
   @discardableResult
   func forEachUntil(_ op: (borrowing Element) -> Bool) -> Bool {
     withPartition(into: 2) { p in
-      while !p.parts.last!.isEmpty() {
-        if op(p.parts.last!.first) { return true }
+      while !p[part: 1].isEmpty() {
+        if op(p[part: 1].first) { return true }
         p.grow(part: 0)
       }
       return false

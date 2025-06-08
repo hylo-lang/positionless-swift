@@ -15,7 +15,7 @@ struct FixedArray<Element> {
   public var first: Element? { storage.first }
 
   /// Last element
-  public var last: Element? { storage.first }
+  public var last: Element? { storage.last }
 
   /// Access individual elements.
   public subscript(index: Int) -> Element {
