@@ -7,8 +7,8 @@ import Testing
   array.withMutablePartition(into: 2) { partition in
     partition.rotate()
     #expect(partition.partitionCount == 2)
-    #expect(partition[part: 0].equals([1, 2, 3, 4, 5, 6, 7, 8, 9]))
-    #expect(partition[part: 1].equals([]))
+    #expect(partition[part: 0] == [1, 2, 3, 4, 5, 6, 7, 8, 9])
+    #expect(partition[part: 1] == [])
   }
 }
 
@@ -18,8 +18,8 @@ import Testing
     partition.grow(part: 0, by: 9)
     partition.rotate()
     #expect(partition.partitionCount == 2)
-    #expect(partition[part: 0].equals([]))
-    #expect(partition[part: 1].equals([1, 2, 3, 4, 5, 6, 7, 8, 9]))
+    #expect(partition[part: 0] == [])
+    #expect(partition[part: 1] == [1, 2, 3, 4, 5, 6, 7, 8, 9])
   }
 }
 
@@ -29,8 +29,8 @@ import Testing
     partition.grow(part: 0, by: 3)
     partition.rotate()
     #expect(partition.partitionCount == 2)
-    #expect(partition[part: 0].equals([4, 5, 6, 7, 8, 9]))
-    #expect(partition[part: 1].equals([1, 2, 3]))
+    #expect(partition[part: 0] == [4, 5, 6, 7, 8, 9])
+    #expect(partition[part: 1] == [1, 2, 3])
   }
 }
 
@@ -40,8 +40,8 @@ import Testing
     partition.grow(part: 0, by: 6)
     partition.rotate()
     #expect(partition.partitionCount == 2)
-    #expect(partition[part: 0].equals([7, 8, 9]))
-    #expect(partition[part: 1].equals([1, 2, 3, 4, 5, 6]))
+    #expect(partition[part: 0] == [7, 8, 9])
+    #expect(partition[part: 1] == [1, 2, 3, 4, 5, 6])
   }
 }
 
@@ -51,7 +51,7 @@ import Testing
     partition.grow(part: 0, by: 4)
     partition.rotate()
     #expect(partition.partitionCount == 2)
-    #expect(partition[part: 0].equals([5, 6, 7, 8]))
-    #expect(partition[part: 1].equals([1, 2, 3, 4]))
+    #expect(partition[part: 0] == [5, 6, 7, 8])
+    #expect(partition[part: 1] == [1, 2, 3, 4])
   }
 }

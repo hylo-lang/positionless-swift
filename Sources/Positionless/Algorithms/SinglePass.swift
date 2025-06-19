@@ -39,13 +39,13 @@ extension Collection {
 
   /// Returns true if `count == other.count` and all elements in `self` is
   /// equal to all elements in `other` in order.
-  func equals<C: Collection>(_ other: C) -> Bool
+  static func == <C: Collection>(lhs: Self, rhs: C) -> Bool
   where
-    Element == C.Element,
+    Self.Element == C.Element,
     Element: Equatable
   {
-    withPartition(into: 2) { p1 in
-      other.withPartition(into: 2) { p2 in
+    lhs.withPartition(into: 2) { p1 in
+      rhs.withPartition(into: 2) { p2 in
         while !p1[part: 1].isEmpty() && !p2[part: 1].isEmpty() {
           if p1[part: 1].first != p2[part: 1].first {
             return false
