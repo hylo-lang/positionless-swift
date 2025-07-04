@@ -1,5 +1,5 @@
 /// A part of ArrayPartition.
-struct ArrayPart<Element>: MutableCollection, BidirectionalCollection {
+struct ArrayPart<Element>: MutableCollection, RandomAccessCollection {
 
   /// Actual base storage of buffer.
   internal var storage: ArraySlice<Element>

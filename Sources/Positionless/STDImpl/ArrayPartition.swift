@@ -1,5 +1,5 @@
 /// Partitioning of an array.
-struct ArrayPartition<Element>: MutableCollectionPartition, BidirectionalCollectionPartition {
+struct ArrayPartition<Element>: MutableCollectionPartition, RandomAccessCollectionPartition {
 
   /// Actual array storage
   var storage: ArraySlice<Element>

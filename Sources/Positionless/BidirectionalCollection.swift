@@ -1,3 +1,4 @@
+/// Partitioning that supports backward traversal.
 protocol BidirectionalCollectionPartition: CollectionPartition
 where Part: BidirectionalCollection {
 
@@ -44,6 +45,7 @@ extension BidirectionalCollectionPartition {
 
 }
 
+/// Collection that supports backward traversal.
 protocol BidirectionalCollection: Collection
 where Partition: BidirectionalCollectionPartition {
 }
