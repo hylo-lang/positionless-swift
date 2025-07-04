@@ -32,11 +32,8 @@ where Part: MutableCollection {
 }
 
 /// A collection that supports mutation of elements.
-protocol MutableCollection: Collection {
-
-  /// A mutatble separation of `Self` into partitions.
-  associatedtype MutablePartition: MutableCollectionPartition
-  where MutablePartition.Part.Element == Element
+protocol MutableCollection: Collection
+where Partition: MutableCollectionPartition {
 
   /// The first element of the collection.
   ///
@@ -45,9 +42,5 @@ protocol MutableCollection: Collection {
 
   /// Returns the result of passing to `f` the partitioning of `self`
   /// whose last part contains all elements and other parts are empty.
-  mutating func withMutablePartition<R>(
-    into partitionCount: Int,
-    _ f: (inout MutablePartition) -> R
-  ) -> R
-
+  mutating func withMutablePartition<R>(count partitionCount: Int, _ f: (inout Partition) -> R) -> R
 }

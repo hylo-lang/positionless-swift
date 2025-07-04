@@ -99,7 +99,7 @@ protocol Collection<Element>: ~Copyable {
 
   /// Returns the result of passing to `f` the partitioning of `self`
   /// whose last part contains all elements and other parts are empty.
-  func withPartition<R>(into partitionCount: Int, _ f: (inout Partition) -> R) -> R
+  func withPartition<R>(count partitionCount: Int, _ f: (inout Partition) -> R) -> R
 
   /// Number of elements.
   var count: Int { get }
