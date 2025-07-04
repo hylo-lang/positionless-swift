@@ -1,5 +1,7 @@
 /// A part of ArrayPartition.
 struct ArrayPart<Element>: MutableCollection, RandomAccessCollection {
+  // NOTE: Didn't use ArraySlice directly as var like `first` and `last` might
+  // get hard to test.
 
   /// Actual base storage of buffer.
   internal var storage: ArraySlice<Element>
