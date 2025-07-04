@@ -87,7 +87,10 @@ protocol Collection<Element>: ~Copyable {
   associatedtype Element
 
   /// A separation of `Self` into partitions.
-  associatedtype Partition: CollectionPartition where Partition.Part.Element == Element
+  associatedtype Partition: CollectionPartition
+  where
+    Partition.Part.Element == Element,
+    Partition.Part.Partition == Partition
 
   /// True iff `self` is empty.
   func isEmpty() -> Bool
