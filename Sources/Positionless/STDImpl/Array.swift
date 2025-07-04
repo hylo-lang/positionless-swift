@@ -1,4 +1,4 @@
-extension Array: Collection {
+extension Array: MutableCollection, BidirectionalCollection {
 
   /// Separation of array into contiguous partitions.
   typealias Partition = ArrayPartition<Element>

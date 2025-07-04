@@ -1,5 +1,5 @@
 /// Partitioning of an array.
-struct ArrayPartition<Element>: MutableCollectionPartition {
+struct ArrayPartition<Element>: MutableCollectionPartition, BidirectionalCollectionPartition {
 
   /// Actual array storage
   var storage: ArraySlice<Element>
@@ -83,9 +83,7 @@ struct ArrayPartition<Element>: MutableCollectionPartition {
   ///   - `parts[i + 1].count >= n`
   ///   - `n >= 0`
   ///
-  /// - Complexity:
-  ///   - O(1) for RandomAccessCollection,
-  ///   - O(n) otherwise.
+  /// - Complexity: O(1)
   mutating func grow(part i: Int, by n: Int) {
     partitionStartIndexes[i + 1] += n
   }
@@ -116,6 +114,28 @@ struct ArrayPartition<Element>: MutableCollectionPartition {
   /// - Precondition: `i < partitionCount - 1`.
   mutating func transferAllToNext(from i: Int) {
     partitionStartIndexes[i + 1] = partitionStartIndexes[i]
+  }
+
+  /// Decrements size of `i`th part by 1 and increments size of `i + 1`th part by 1.
+  ///
+  /// - Precondition:
+  ///   - `i < partitionCount - 1`
+  ///   - `!parts[i].isEmpty()`
+  mutating func shrink(part i: Int) {
+    partitionStartIndexes[i + 1] -= 1
+  }
+
+  /// Decrements size of `i`th partition by `n` and increments size of
+  /// `i + 1`th part by `n`.
+  ///
+  /// - Precondition:
+  ///   - `i < partitionCount - 1`
+  ///   - `parts[i].count >= n`
+  ///   - `n >= 0`
+  ///
+  /// - Complexity: O(n).
+  mutating func shrink(part i: Int, by n: Int) {
+    partitionStartIndexes[i + 1] -= n
   }
 
   /// Swaps first element partition i and j.
