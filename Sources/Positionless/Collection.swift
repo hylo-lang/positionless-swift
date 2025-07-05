@@ -37,16 +37,6 @@ protocol CollectionPartition: ~Copyable {
   ///   - O(n) otherwise.
   mutating func grow(part i: Int, by n: Int)
 
-  /// Make the `i - 1`th part empty and takes all element into part `i`.
-  ///
-  /// - Precondition: `i > 0`.
-  mutating func absorbAllFromPrev(into i: Int)
-
-  /// Make the `i + 1`th part empty and takes all element into part `i`.
-  ///
-  /// - Precondition: `i < partitionCount - 1`.
-  mutating func absorbAllFromNext(into i: Int)
-
   /// Make the `i`th part empty and takes all element into part `i - 1`.
   ///
   /// - Precondition: `i > 0`.

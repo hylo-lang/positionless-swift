@@ -88,20 +88,6 @@ struct ArrayPartition<Element>: MutableCollectionPartition, RandomAccessCollecti
     partitionStartIndexes[i + 1] += n
   }
 
-  /// Make the `i - 1`th part empty and takes all element into part `i`.
-  ///
-  /// - Precondition: `i > 0`.
-  mutating func absorbAllFromPrev(into i: Int) {
-    partitionStartIndexes[i] = partitionStartIndexes[i - 1]
-  }
-
-  /// Make the `i + 1`th part empty and takes all element into part `i`.
-  ///
-  /// - Precondition: `i < partitionCount - 1`.
-  mutating func absorbAllFromNext(into i: Int) {
-    partitionStartIndexes[i + 1] = partitionStartIndexes[i + 2]
-  }
-
   /// Make the `i`th part empty and takes all element into part `i - 1`.
   ///
   /// - Precondition: `i > 0`.
