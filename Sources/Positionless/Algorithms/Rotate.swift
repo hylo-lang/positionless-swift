@@ -12,7 +12,7 @@ extension MutableCollectionPartition {
       p.transferAllToNext(from: 1)
       p.transferAllToNext(from: 2)
       p.transferAllToNext(from: 0)
-      p.rotateQuadrisection()
+      p.rotateQuadrisection(partitionPointMatters: true)
     }
   }
 
@@ -26,60 +26,66 @@ extension MutableCollectionPartition {
   ///
   /// After rotation, D contains the final first half and F, E, S contains
   /// elements of second half in order.
-  private mutating func rotateQuadrisection() {
-    // Handle base cases.
-    if self[part: 3].isEmpty() {
-      transferAllToNext(from: 0)
-      transferAllToNext(from: 1)
-      transferAllToNext(from: 2)
-      return
-    }
-    if self[part: 1].isEmpty() {
-      transferAllToPrev(from: 3)
-      transferAllToPrev(from: 2)
-      transferAllToPrev(from: 1)
-      return
-    }
-
-    // We have 2 regions of possibly-unequal lengths parts[1] and parts[3].
-    //
-    // [_ | a b c d e f g | _ | h i j]   or   [_ | a b c | _ | d e f g h i j]
-    while !self[part: 3].isEmpty() {
-      // Exchange the leading elements parts[1] and part[3] by
-      //  - putting exchanged part[3] elements in part[0]
-      //  - putting exchanged part[1] elements in part[2]
-      //
-      // [h i j | d e f g | a b c | _ ]   or   [d e f | _ | a b c | g h i j]
-      swapFirst(1, 3)
-      grow(part: 0)
-      grow(part: 2)
-
-      if self[part: 1].isEmpty() {
-        // Second case:
-        //
-        // More elements from parts[3] needs to be in parts[0]. Thus make the
-        // quadrisection again in D | F | E | S form to again perform exchange
-        // loop.
-        //
-        // [d e f | a b c | _ | g h i j]
-        transferAllToPrev(from: 2)
+  private mutating func rotateQuadrisection(partitionPointMatters: Bool) {
+    while true {
+      // Handle base cases.
+      if self[part: 3].isEmpty() {
+        transferAllToNext(from: 0)
+        transferAllToNext(from: 1)
+        transferAllToNext(from: 2)
+        return
       }
+      if self[part: 1].isEmpty() {
+        transferAllToPrev(from: 3)
+        transferAllToPrev(from: 2)
+        transferAllToPrev(from: 1)
+        return
+      }
+
+      // We have 2 regions of possibly-unequal lengths parts[1] and parts[3].
+      //
+      // [_ | a b c d e f g | _ | h i j]   or   [_ | a b c | _ | d e f g h i j]
+      while !self[part: 3].isEmpty() {
+        // Exchange the leading elements parts[1] and part[3] by
+        //  - putting exchanged part[3] elements in part[0]
+        //  - putting exchanged part[1] elements in part[2]
+        //
+        // [h i j | d e f g | a b c | _ ]   or   [d e f | _ | a b c | g h i j]
+        swapFirst(1, 3)
+        grow(part: 0)
+        grow(part: 2)
+
+        if self[part: 1].isEmpty() {
+          // Second case:
+          //
+          // More elements from parts[3] needs to be in parts[0]. Thus make the
+          // quadrisection again in D | F | E | S form to again perform exchange
+          // loop.
+          //
+          // [d e f | a b c | _ | g h i j]
+          transferAllToPrev(from: 2)
+        }
+      }
+
+      // When parts[3] is empty, parts[0] contain the final elements after rotation.
+      // But parts[1] and parts[2] might not be in right order. So, make them
+      // in D | F | E | S form.
+      //
+      // First case:
+      // [h i j | d e f g | _ | a b c]
+      transferAllToNext(from: 2)  // This results a subproblem for rotate.
+
+      if partitionPointMatters {
+        // parts[0] boundary should not be touched, so recurse on a copy to
+        // preserve boundaries and break as rotation should be done.
+        //
+        // First case:
+        // [h i j | a b c d | _ | e f g]
+        withCopy { $0.rotateQuadrisection(partitionPointMatters: false) }
+        break
+      }
+      // else solve the subproblem in while loop.
     }
-
-    // When parts[3] is empty, parts[0] contain the final elements after rotation.
-    // But parts[1] and parts[2] might not be in right order. So, make them
-    // in D | F | E | S form.
-    //
-    // First case:
-    // [h i j | d e f g | _ | a b c]
-    transferAllToNext(from: 2)
-
-    // The above results a subproblem for rotate, but parts[0] boundary should
-    // not be touched, so recurse on a copy to preserve boundaries.
-    //
-    // First case:
-    // [h i j | a b c d | _ | e f g]
-    withCopy { $0.rotateQuadrisection() }
   }
 
 }
