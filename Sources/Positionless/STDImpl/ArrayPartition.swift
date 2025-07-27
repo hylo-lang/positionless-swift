@@ -152,7 +152,7 @@ struct ArrayPartition<Element>: MutableCollectionPartition, RandomAccessCollecti
 
   /// Calls `f` with a partition that is a copy of `self`.
   /// Returns the result of compuatation of `f`.
-  mutating func withCopy<R>(_ f: (inout ArrayPartition) -> R) -> R {
+  mutating func withProjection<R>(_ f: (inout ArrayPartition) -> R) -> R {
     var copy = ArrayPartition(storage, partitionStartIndexes)
     let res = f(&copy)
     _writeBackArraySlice(from: copy.storage, to: &storage)

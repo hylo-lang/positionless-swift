@@ -81,7 +81,7 @@ extension MutableCollectionPartition {
         //
         // First case:
         // [h i j | a b c d | _ | e f g]
-        withCopy { $0.rotateQuadrisection(partitionPointMatters: false) }
+        withProjection { $0.rotateQuadrisection(partitionPointMatters: false) }
         break
       }
       // else solve the subproblem in while loop.

@@ -25,9 +25,12 @@ where Part: MutableCollection {
   /// - Precondition: `n >= 0`.
   mutating func withAdditionalParts<R>(_ n: Int, _ f: (inout Self) -> R) -> R
 
-  /// Calls `f` with a partition that is a copy of `self`.
+  /// Calls `f` with a partition that is projection of `self`.
   /// Returns the result of compuatation of `f`.
-  mutating func withCopy<R>(_ f: (inout Self) -> R) -> R
+  ///
+  /// - Postcondition: Changes in partition points of projection by `f` will
+  /// not be visible in `self` after call to `f`.
+  mutating func withProjection<R>(_ f: (inout Self) -> R) -> R
 
 }
 
