@@ -9,8 +9,7 @@ extension MutableCollectionPartition {
   /// - Complexity: O(n) where `n == parts[0].count + parts[1].count`.
   mutating func rotate() {
     withAdditionalParts(2) { p in
-      p.transferAllToNext(from: 1)
-      p.transferAllToNext(from: 2)
+      p.shiftSections(from: 1, to: 3)
       p.transferAllToNext(from: 0)
       p.rotateQuadrisection(partitionPointMatters: true)
     }
@@ -30,15 +29,11 @@ extension MutableCollectionPartition {
     while true {
       // Handle base cases.
       if self[part: 3].isEmpty() {
-        transferAllToNext(from: 0)
-        transferAllToNext(from: 1)
-        transferAllToNext(from: 2)
+        shiftSections(from: 0, to: 3)
         return
       }
       if self[part: 1].isEmpty() {
-        transferAllToPrev(from: 3)
-        transferAllToPrev(from: 2)
-        transferAllToPrev(from: 1)
+        shiftSections(from: 3, to: 0)
         return
       }
 
@@ -76,7 +71,7 @@ extension MutableCollectionPartition {
       transferAllToNext(from: 2)  // This results a subproblem for rotate.
 
       if partitionPointMatters {
-        // parts[0] boundary should not be touched, so recurse on a copy to
+        // parts[0] boundary should not be touched, so recurse on self projection to
         // preserve boundaries and break as rotation should be done.
         //
         // First case:

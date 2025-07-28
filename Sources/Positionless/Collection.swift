@@ -68,6 +68,25 @@ extension CollectionPartition {
     }
   }
 
+  /// Shifts all elements of `[from, to)` parts to `to` part.
+  ///
+  /// - Postcondition:
+  ///   - If `from < to`, `from`, `from + 1`, ... `to - 1` elements would be
+  ///     shifted to `to`.
+  ///   - If `from > to`, `from`, `from - 1`, ... `to + 1` elements would be
+  ///     shifted to `to`.
+  mutating func shiftSections(from: Int, to: Int) {
+    if from < to {
+      for i in from..<to {
+        transferAllToNext(from: i)
+      }
+    } else if to < from {
+      for i in stride(from: from, to: to, by: -1) {
+        transferAllToPrev(from: i)
+      }
+    }
+  }
+
 }
 
 /// A multi-pass sequence of `Element`s.
