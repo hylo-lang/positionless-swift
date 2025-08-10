@@ -1,11 +1,3 @@
-/// Partitioning for RandomAccessCollection
-///
-/// It guarantees that `grow(part: , by: )` and `shrink(part: , by: )` works
-/// in O(1).
-protocol RandomAccessCollectionPartition: BidirectionalCollectionPartition
-where Part: RandomAccessCollection {
-}
-
-/// Collection that supports efficient element jumps while traversal.
+/// Collection that O(1) `grow(part:, by:)` and `shrink(part:, by:)` on its partition.
 protocol RandomAccessCollection: BidirectionalCollection {
 }
