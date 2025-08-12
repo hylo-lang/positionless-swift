@@ -1,4 +1,3 @@
-// todo: implement grow_n and shrink_n
 struct SlicePartition<Base>
 where Base: Swift.Collection {
 
@@ -36,6 +35,10 @@ extension SlicePartition: Partition {
     storage.formIndex(after: &partitionStartIndexes[i + 1])
   }
 
+  mutating func grow(part i: Int, by n: Int) {
+    storage.formIndex(&partitionStartIndexes[i + 1], offsetBy: n)
+  }
+
   mutating func transferAllToPrev(from i: Int) {
     partitionStartIndexes[i] = partitionStartIndexes[i + 1]
   }
@@ -63,6 +66,10 @@ extension SlicePartition: BidirectionalPartition
 where Base: Swift.BidirectionalCollection {
   mutating func shrink(part i: Int) {
     storage.formIndex(before: &partitionStartIndexes[i + 1])
+  }
+
+  mutating func shrink(part i: Int, by n: Int) {
+    storage.formIndex(&partitionStartIndexes[i + 1], offsetBy: -n)
   }
 }
 
