@@ -1,12 +1,10 @@
 extension MutablePartitioning {
 
-  /// Mutates the bisection so that after operation `parts[0]` contains elements
-  /// of `parts[1]` currently and `parts[1]` after operation contains elements of
-  /// `parts[0]` currently. Relative ordering of individual part is preserved.
+  /// Exchanges the elements of `parts[0]` with those of `parts[1]` without
+  /// reordering elements within each parts.
   ///
   /// - Precondition: `partitionCount == 2`.
-  /// - Postcondition: `partitionCount == 2`
-  /// - Complexity: O(n) where `n == parts[0].count + parts[1].count`.
+  /// - Complexity: no more than `count` swaps.
   mutating func rotate() {
     withAdditionalParts(2) { p in
       p.shiftSections(from: 1, to: 3)
@@ -15,17 +13,26 @@ extension MutablePartitioning {
     }
   }
 
-  /// Assumes quadrisection of following form:
-  /// D | F | T | S
+  /// Moves elements of `part[3]` to `part[0]` without disturbing relative
+  /// ordering of rest of elements.
   ///
-  /// D -> Done elements. Elements which are in their proper place.
-  /// F -> Elements for rotation in first half.
-  /// E -> Empty buffer for temporary use purposes.
-  /// S -> Elements for rotation in second half.
+  /// - Precondition:
+  ///   - `part[3]` contains elements that should be followed by elements in
+  ///     `part[1]` after rotation.
+  ///   - `part[0].isEmpty() && part[2].isEmpty()`.
   ///
-  /// After rotation, D contains the final first half and F, E, S contains
-  /// elements of second half in order.
+  /// - Postcondition:
+  ///   - `part[0]` **only** contains all elements of given `part[3]` with
+  ///     maintaining relative ordering.
+  ///
+  /// - Complexity: no more than `count` swaps.
   private mutating func rotateQuadrisection(partitionPointMatters: Bool) {
+    // Loop Invariant:
+    // - After every iteration, `part[0]` would contain elements moved from
+    //   `part[3]` with same relative ordering.
+    // - `part[1]` and `part[3]` contains rest of elements for rotation such that
+    //   `part[3]` elements should be followed by elements in `part[1]` after rotation.
+    // - `part[2]` is empty.
     while true {
       // Handle base cases.
       if self[part: 3].isEmpty() {
