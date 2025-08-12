@@ -109,14 +109,12 @@ protocol Collection<Element>: ~Copyable {
     SubSeq.SubSeq == SubSeq,
     SubSeq.Parts == Parts
 
-  /// A partition full `Self` into n disjoint contiguous SubSequences.
+  /// A partitioning full `Self` into n disjoint contiguous SubSequences.
   associatedtype Parts: Partitioning
   where
     Parts.SubSeq == SubSeq
 
   /// True iff `self` is empty.
-  ///
-  /// Complexity: O(1).
   func isEmpty() -> Bool
 
   /// The first element of the collection.
@@ -125,14 +123,17 @@ protocol Collection<Element>: ~Copyable {
   var first: Element { get }
 
   /// Returns the result of passing to `f` the partitioning of `self`
-  /// whose last part contains all elements and other parts are empty.
+  /// whose all parts except last part is empty.
   func withParts<R>(count partitionCount: Int, _ f: (inout Parts) -> R) -> R
 
-  /// Calls `f` with a slice containing all elements of `self`.
-  /// Returns the value returned by `f`.
+  /// Returns the result of passing to `f` the slice of `self` which contains
+  /// all elements of `self`.
   func withSlice<R>(_ f: (inout SubSeq) -> R) -> R
 
   /// Number of elements.
+  ///
+  /// Complexity: O(1) for RandomAccessCollection; otherwise O(n) where n is
+  /// number of elements in collection.
   var count: Int { get }
 
 }

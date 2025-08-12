@@ -18,21 +18,16 @@ where SubSeq: MutableSlice {
   /// `i`th part.
   subscript(part i: Int) -> SubSeq { get set }
 
-  /// Calls `f` with a partition that has parts same as self with `n` extra
-  /// empty partitions at the end. Returns the result of computation of `f`.
-  ///
-  /// The shape of `self` becomes similar to shape of partition with which
-  /// `f` was called, except the last part of `self` also contains elements
-  /// of additional parts.
+  /// Returns the result of passing to `f` the mutable projection of self with
+  /// `n` additional empty parts at end.
   ///
   /// - Precondition: `n >= 0`.
+  ///
+  /// - Postcondition: `self` adopts the boundaries of projected partitioning.
+  /// The elements in additional parts of projection are appended to last part.
   mutating func withAdditionalParts<R>(_ n: Int, _ f: (inout Self) -> R) -> R
 
-  /// Calls `f` with a partition that is projection of `self`.
-  /// Returns the result of compuatation of `f`.
-  ///
-  /// - Postcondition: Changes in partition points of projection by `f` will
-  /// not be visible in `self` after call to `f`.
+  /// Returns the result of passing to `f` the independent projection of `self`.
   mutating func withProjection<R>(_ f: (inout Self) -> R) -> R
 
 }
@@ -49,11 +44,11 @@ where
   /// - Precondition: !self.isEmpty()
   var first: Element { get set }
 
-  /// Calls `f` with a slice containing all elements of `self`.
-  /// Returns the value returned by `f`.
+  /// Returns the result of passing to `f` the slice of `self` which contains
+  /// all elements of `self`.
   mutating func withMutableSlice<R>(_ f: (inout SubSeq) -> R) -> R
 
   /// Returns the result of passing to `f` the partitioning of `self`
-  /// whose last part contains all elements and other parts are empty.
+  /// whose all parts except last part is empty.
   mutating func withMutableParts<R>(count partitionCount: Int, _ f: (inout Parts) -> R) -> R
 }
