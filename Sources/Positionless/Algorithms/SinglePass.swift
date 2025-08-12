@@ -5,7 +5,7 @@ extension Collection {
   /// `self` is exhausted, returning `true` iff `op` ever returned
   /// `true`.
   @discardableResult
-  func forEachUntil(_ op: (borrowing Element) -> Bool) -> Bool {
+  func forEach(until op: (borrowing Element) -> Bool) -> Bool {
     withParts(count: 2) { p in
       while !p[part: 1].isEmpty() {
         if op(p[part: 1].first) { return true }
@@ -17,7 +17,7 @@ extension Collection {
 
   /// Applies `op` to each element in turn.
   func forEach(_ op: (borrowing Element) -> Void) {
-    forEachUntil {
+    forEach {
       op($0)
       return false
     }

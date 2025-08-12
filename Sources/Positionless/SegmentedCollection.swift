@@ -30,9 +30,9 @@ extension SegmentedCollection {
   /// Applies `op` to each element in turn until it returns `true` or
   /// `self` is exhausted, returning `true` iff `op` ever returned `true`.
   @discardableResult
-  func forEachUntil(_ op: (borrowing Element) -> Bool) -> Bool {
-    segments.forEachUntil {
-      $0.forEachUntil(op)
+  func forEach(until op: (borrowing Element) -> Bool) -> Bool {
+    segments.forEach {
+      $0.forEach(until: op)
     }
   }
 
