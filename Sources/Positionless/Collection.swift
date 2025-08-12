@@ -115,6 +115,8 @@ protocol Collection<Element>: ~Copyable {
     Parts.SubSeq == SubSeq
 
   /// True iff `self` is empty.
+  ///
+  /// Complexity: O(1).
   func isEmpty() -> Bool
 
   /// The first element of the collection.
