@@ -6,7 +6,7 @@ protocol BidirectionalSlice: Slice, BidirectionalCollection {
 }
 
 /// Partitioning that supports backward traversal.
-protocol BidirectionalPartition: Partition
+protocol BidirectionalPartitioning: Partitioning
 where SubSeq: BidirectionalSlice {
 
   /// Decrements size of `i`th part by 1 and increments size of `i + 1`th part by 1.
@@ -31,7 +31,7 @@ where SubSeq: BidirectionalSlice {
 
 }
 
-extension BidirectionalPartition {
+extension BidirectionalPartitioning {
 
   /// Decrements size of `i`th partition by `n` and increments size of
   /// `i + 1`th part by `n`.
@@ -56,7 +56,7 @@ extension BidirectionalPartition {
 protocol BidirectionalCollection: Collection
 where
   SubSeq: BidirectionalSlice,
-  Parts: BidirectionalPartition
+  Parts: BidirectionalPartitioning
 {
   /// The last element of the collection.
   ///

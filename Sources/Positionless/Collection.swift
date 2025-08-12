@@ -6,7 +6,7 @@ protocol Slice: Collection {
 }
 
 /// A separation of some collection into multiple contiguous slices.
-protocol Partition: ~Copyable {
+protocol Partitioning: ~Copyable {
 
   /// The type of each part subsequence.
   associatedtype SubSeq: Slice
@@ -56,7 +56,7 @@ protocol Partition: ~Copyable {
 
 }
 
-extension Partition {
+extension Partitioning {
 
   /// Increments the size of `i`th part by `n` and decrements the size of
   /// `i + 1`th part by `n`.
@@ -110,7 +110,7 @@ protocol Collection<Element>: ~Copyable {
     SubSeq.Parts == Parts
 
   /// A partition full `Self` into n disjoint contiguous SubSequences.
-  associatedtype Parts: Partition
+  associatedtype Parts: Partitioning
   where
     Parts.SubSeq == SubSeq
 

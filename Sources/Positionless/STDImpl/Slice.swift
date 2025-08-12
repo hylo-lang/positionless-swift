@@ -2,7 +2,7 @@ extension Swift.Slice: Collection {
   /// A slice has self as subsequence.
   typealias SubSeq = Self
 
-  typealias Parts = SlicePartition<Base>
+  typealias Parts = SlicePartitioning<Base>
 
   func isEmpty() -> Bool {
     isEmpty
@@ -15,7 +15,7 @@ extension Swift.Slice: Collection {
   }
 
   func withParts<R>(count partitionCount: Int, _ f: (inout Parts) -> R) -> R {
-    var parts = SlicePartition(self, into: partitionCount)
+    var parts = SlicePartitioning(self, into: partitionCount)
     return f(&parts)
   }
 
@@ -80,9 +80,9 @@ where Base: Swift.MutableCollection {
   }
 
   mutating func withMutableParts<R>(
-    count partitionCount: Int, _ f: (inout SlicePartition<Base>) -> R
+    count partitionCount: Int, _ f: (inout SlicePartitioning<Base>) -> R
   ) -> R {
-    var parts = SlicePartition(self, into: partitionCount)
+    var parts = SlicePartitioning(self, into: partitionCount)
     let res = f(&parts)
     _writeBackElements(from: parts.storage, to: &self[...])
     return res

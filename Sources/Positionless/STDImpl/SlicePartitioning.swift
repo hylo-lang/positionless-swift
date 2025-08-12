@@ -1,4 +1,4 @@
-struct SlicePartition<Base>
+struct SlicePartitioning<Base>
 where Base: Swift.Collection {
 
   /// Full collection slice.
@@ -7,7 +7,7 @@ where Base: Swift.Collection {
   /// Start index of every partition and end index.
   var partitionStartIndexes: [Base.Index]
 
-  /// Creates instance of SlicePartition.
+  /// Creates instance of SlicePartitioning.
   public init(_ storage: Swift.Slice<Base>, _ partitionStartIndexes: [Base.Index]) {
     self.storage = storage
     self.partitionStartIndexes = partitionStartIndexes
@@ -23,7 +23,7 @@ where Base: Swift.Collection {
   }
 }
 
-extension SlicePartition: Partition {
+extension SlicePartitioning: Partitioning {
 
   typealias SubSeq = Swift.Slice<Base>
 
@@ -62,7 +62,7 @@ extension SlicePartition: Partition {
 
 }
 
-extension SlicePartition: BidirectionalPartition
+extension SlicePartitioning: BidirectionalPartitioning
 where Base: Swift.BidirectionalCollection {
   mutating func shrink(part i: Int) {
     storage.formIndex(before: &partitionStartIndexes[i + 1])
@@ -73,11 +73,11 @@ where Base: Swift.BidirectionalCollection {
   }
 }
 
-extension SlicePartition: RandomAccessPartition
+extension SlicePartitioning: RandomAccessPartitioning
 where Base: Swift.RandomAccessCollection {
 }
 
-extension SlicePartition: MutablePartition
+extension SlicePartitioning: MutablePartitioning
 where Base: Swift.MutableCollection {
   mutating func swapFirst(_ i: Int, _ j: Int) {
     storage.swapAt(partitionStartIndexes[i], partitionStartIndexes[j])
@@ -111,8 +111,8 @@ where Base: Swift.MutableCollection {
     }
   }
 
-  mutating func withAdditionalParts<R>(_ n: Int, _ f: (inout SlicePartition<Base>) -> R) -> R {
-    var partition = SlicePartition(
+  mutating func withAdditionalParts<R>(_ n: Int, _ f: (inout SlicePartitioning<Base>) -> R) -> R {
+    var partition = SlicePartitioning(
       storage, partitionStartIndexes + Array(repeating: partitionStartIndexes.last!, count: n))
     let res = f(&partition)
     for i in 1..<partitionCount {
@@ -122,8 +122,8 @@ where Base: Swift.MutableCollection {
     return res
   }
 
-  mutating func withProjection<R>(_ f: (inout SlicePartition<Base>) -> R) -> R {
-    var projection = SlicePartition(storage, partitionStartIndexes)
+  mutating func withProjection<R>(_ f: (inout SlicePartitioning<Base>) -> R) -> R {
+    var projection = SlicePartitioning(storage, partitionStartIndexes)
     let res = f(&projection)
     _writeBackElements(from: projection.storage, to: &storage)
     return res
@@ -131,13 +131,13 @@ where Base: Swift.MutableCollection {
 
 }
 
-extension SlicePartition: MutableBidirectionalPartition
+extension SlicePartitioning: MutableBidirectionalPartitioning
 where
   Base: Swift.MutableCollection,
   Base: Swift.BidirectionalCollection
 {}
 
-extension SlicePartition: MutableRandomAccessPartition
+extension SlicePartitioning: MutableRandomAccessPartitioning
 where
   Base: Swift.MutableCollection,
   Base: Swift.RandomAccessCollection

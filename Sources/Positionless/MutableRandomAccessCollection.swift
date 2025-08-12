@@ -1,12 +1,12 @@
 /// A slice obtained from `MutableRandomAccessCollection`.
 protocol MutableRandomAccessSlice: MutableBidirectionalSlice, RandomAccessCollection {}
 
-protocol MutableRandomAccessPartition: MutableBidirectionalPartition
+protocol MutableRandomAccessPartitioning: MutableBidirectionalPartitioning
 where SubSeq: MutableRandomAccessSlice {}
 
 /// A collection which supports mutating its element and random access traversal mutable
 protocol MutableRandomAccessCollection: MutableBidirectionalCollection, RandomAccessCollection
 where
   SubSeq: MutableRandomAccessSlice,
-  Parts: MutableRandomAccessPartition
+  Parts: MutableRandomAccessPartitioning
 {}

@@ -6,7 +6,7 @@ protocol RandomAccessSlice: BidirectionalSlice, RandomAccessCollection {}
 /// Gurarantees O(1) time for:
 ///   - `grow(part:, by:)`
 ///   - `shrink(part:, by:)`
-protocol RandomAccessPartition: BidirectionalPartition
+protocol RandomAccessPartitioning: BidirectionalPartitioning
 where SubSeq: RandomAccessSlice {}
 
 /// Collection whose partition supports random-access to its elements.
@@ -15,7 +15,7 @@ where SubSeq: RandomAccessSlice {}
 ///   - `count`.
 protocol RandomAccessCollection: BidirectionalCollection
 where
-  Parts: RandomAccessPartition,
+  Parts: RandomAccessPartitioning,
   SubSeq: RandomAccessSlice
 {
 

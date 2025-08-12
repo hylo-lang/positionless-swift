@@ -3,14 +3,14 @@ protocol MutableBidirectionalSlice: MutableBidirectionalCollection, Bidirectiona
 {}
 
 /// A partition obtained from `MutableBidirectionalCollection`.
-protocol MutableBidirectionalPartition: BidirectionalPartition, MutablePartition
+protocol MutableBidirectionalPartitioning: BidirectionalPartitioning, MutablePartitioning
 where SubSeq: MutableBidirectionalSlice {}
 
 /// A collection which supports mutating its element and backward traversal.
 protocol MutableBidirectionalCollection: MutableCollection, BidirectionalCollection
 where
   SubSeq: MutableBidirectionalSlice,
-  Parts: MutableBidirectionalPartition
+  Parts: MutableBidirectionalPartitioning
 {
   /// Swaps first and last element of collection.
   mutating func swapEnds()

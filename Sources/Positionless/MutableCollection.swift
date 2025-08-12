@@ -2,7 +2,7 @@
 protocol MutableSlice: Slice, MutableCollection {}
 
 /// Partition obtained from a `MutableCollection`.
-protocol MutablePartition: Partition
+protocol MutablePartitioning: Partitioning
 where SubSeq: MutableSlice {
 
   /// Swaps first element partition i and j.
@@ -41,7 +41,7 @@ where SubSeq: MutableSlice {
 protocol MutableCollection: Collection
 where
   SubSeq: MutableSlice,
-  Parts: MutablePartition
+  Parts: MutablePartitioning
 {
 
   /// The first element of the collection.
