@@ -6,7 +6,7 @@ extension Collection {
   /// `true`.
   @discardableResult
   func forEachUntil(_ op: (borrowing Element) -> Bool) -> Bool {
-    withPartition(count: 2) { p in
+    withParts(count: 2) { p in
       while !p[part: 1].isEmpty() {
         if op(p[part: 1].first) { return true }
         p.grow(part: 0)
@@ -44,8 +44,8 @@ extension Collection {
     Self.Element == C.Element,
     Element: Equatable
   {
-    lhs.withPartition(count: 2) { p1 in
-      rhs.withPartition(count: 2) { p2 in
+    lhs.withParts(count: 2) { p1 in
+      rhs.withParts(count: 2) { p2 in
         while !p1[part: 1].isEmpty() && !p2[part: 1].isEmpty() {
           if p1[part: 1].first != p2[part: 1].first {
             return false

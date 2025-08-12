@@ -1,4 +1,4 @@
-extension MutableCollectionPartition {
+extension MutablePartition {
 
   /// Mutates the bisection so that after operation `parts[0]` contains elements
   /// of `parts[1]` currently and `parts[1]` after operation contains elements of

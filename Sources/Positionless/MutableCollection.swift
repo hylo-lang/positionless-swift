@@ -1,6 +1,9 @@
-/// Mutable partitions of collection.
-protocol MutableCollectionPartition: CollectionPartition
-where Part: MutableCollection {
+/// A slice obtained from a `MutableCollection`.
+protocol MutableSlice: Slice, MutableCollection {}
+
+/// Partition obtained from a `MutableCollection`.
+protocol MutablePartition: Partition
+where SubSeq: MutableSlice {
 
   /// Swaps first element partition i and j.
   ///
@@ -10,10 +13,10 @@ where Part: MutableCollection {
   /// The parts.
   ///
   /// Invariant: `parts.count == partitionCount`
-  var parts: FixedArray<Part> { get set }
+  var parts: FixedArray<SubSeq> { get set }
 
   /// `i`th part.
-  subscript(part i: Int) -> Part { get set }
+  subscript(part i: Int) -> SubSeq { get set }
 
   /// Calls `f` with a partition that has parts same as self with `n` extra
   /// empty partitions at the end. Returns the result of computation of `f`.
@@ -36,14 +39,21 @@ where Part: MutableCollection {
 
 /// A collection that supports mutation of elements.
 protocol MutableCollection: Collection
-where Partition: MutableCollectionPartition {
+where
+  SubSeq: MutableSlice,
+  Parts: MutablePartition
+{
 
   /// The first element of the collection.
   ///
   /// - Precondition: !self.isEmpty()
   var first: Element { get set }
 
+  /// Calls `f` with a slice containing all elements of `self`.
+  /// Returns the value returned by `f`.
+  mutating func withMutableSlice<R>(_ f: (inout SubSeq) -> R) -> R
+
   /// Returns the result of passing to `f` the partitioning of `self`
   /// whose last part contains all elements and other parts are empty.
-  mutating func withMutablePartition<R>(count partitionCount: Int, _ f: (inout Partition) -> R) -> R
+  mutating func withMutableParts<R>(count partitionCount: Int, _ f: (inout Parts) -> R) -> R
 }

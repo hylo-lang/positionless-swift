@@ -4,7 +4,7 @@ extension MutableCollection where Self: BidirectionalCollection {
   /// - Complexity: O(n)
   mutating func reverse_() {  // FIXME: _ after reverse is to avoid ambiguity with stdlib reverse.
     // Start with [ _ | _ | a b c d e ]
-    withMutablePartition(count: 3) { p in
+    withMutableParts(count: 3) { p in
       p.transferAllToPrev(from: 2)  // --> [ _ | a b c d e | _ ]
 
       // Loop Invariant:

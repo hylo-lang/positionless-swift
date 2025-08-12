@@ -1,8 +1,15 @@
-/// A separation of some collection into multiple contiguous partitions.
-protocol CollectionPartition: ~Copyable {
+/// Models a subsequence of a collection.
+protocol Slice: Collection {
+  /// Drops the first element from slice and returns true. Returns false, if
+  /// slice was empty.
+  mutating func dropFirst() -> Bool
+}
 
-  /// The type of each part.
-  associatedtype Part: Collection
+/// A separation of some collection into multiple contiguous slices.
+protocol Partition: ~Copyable {
+
+  /// The type of each part subsequence.
+  associatedtype SubSeq: Slice
 
   /// Number of partitions.
   ///
@@ -12,10 +19,10 @@ protocol CollectionPartition: ~Copyable {
   /// The parts.
   ///
   /// Invariant: `parts.count == partitionCount`
-  var parts: FixedArray<Part> { get }
+  var parts: FixedArray<SubSeq> { get }
 
   /// `i`th part.
-  subscript(part i: Int) -> Part { get }
+  subscript(part i: Int) -> SubSeq { get }
 
   /// Increments the size of `i`th part by 1 and decrements the size of `i + 1`th part by 1.
   ///
@@ -49,7 +56,7 @@ protocol CollectionPartition: ~Copyable {
 
 }
 
-extension CollectionPartition {
+extension Partition {
 
   /// Increments the size of `i`th part by `n` and decrements the size of
   /// `i + 1`th part by `n`.
@@ -95,11 +102,17 @@ protocol Collection<Element>: ~Copyable {
   /// The type of contained thing.
   associatedtype Element
 
-  /// A separation of `Self` into partitions.
-  associatedtype Partition: CollectionPartition
+  /// Type of subsequence of collection.
+  associatedtype SubSeq: Slice
   where
-    Partition.Part.Element == Element,
-    Partition.Part.Partition == Partition
+    SubSeq.Element == Element,
+    SubSeq.SubSeq == SubSeq,
+    SubSeq.Parts == Parts
+
+  /// A partition full `Self` into n disjoint contiguous SubSequences.
+  associatedtype Parts: Partition
+  where
+    Parts.SubSeq == SubSeq
 
   /// True iff `self` is empty.
   func isEmpty() -> Bool
@@ -111,7 +124,11 @@ protocol Collection<Element>: ~Copyable {
 
   /// Returns the result of passing to `f` the partitioning of `self`
   /// whose last part contains all elements and other parts are empty.
-  func withPartition<R>(count partitionCount: Int, _ f: (inout Partition) -> R) -> R
+  func withParts<R>(count partitionCount: Int, _ f: (inout Parts) -> R) -> R
+
+  /// Calls `f` with a slice containing all elements of `self`.
+  /// Returns the value returned by `f`.
+  func withSlice<R>(_ f: (inout SubSeq) -> R) -> R
 
   /// Number of elements.
   var count: Int { get }

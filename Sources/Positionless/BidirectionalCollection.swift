@@ -1,6 +1,13 @@
+/// A slice that allows manipulating elements from end.
+protocol BidirectionalSlice: Slice, BidirectionalCollection {
+  /// Drops last element from slice and returns true.
+  /// If slice was empty, returns false.
+  mutating func dropLast() -> Bool
+}
+
 /// Partitioning that supports backward traversal.
-protocol BidirectionalCollectionPartition: CollectionPartition
-where Part: BidirectionalCollection {
+protocol BidirectionalPartition: Partition
+where SubSeq: BidirectionalSlice {
 
   /// Decrements size of `i`th part by 1 and increments size of `i + 1`th part by 1.
   ///
@@ -24,7 +31,7 @@ where Part: BidirectionalCollection {
 
 }
 
-extension BidirectionalCollectionPartition {
+extension BidirectionalPartition {
 
   /// Decrements size of `i`th partition by `n` and increments size of
   /// `i + 1`th part by `n`.
@@ -47,5 +54,12 @@ extension BidirectionalCollectionPartition {
 
 /// Collection that supports backward traversal.
 protocol BidirectionalCollection: Collection
-where Partition: BidirectionalCollectionPartition {
+where
+  SubSeq: BidirectionalSlice,
+  Parts: BidirectionalPartition
+{
+  /// The last element of the collection.
+  ///
+  /// - Precondition: !self.isEmpty()
+  var last: Element { get }
 }
