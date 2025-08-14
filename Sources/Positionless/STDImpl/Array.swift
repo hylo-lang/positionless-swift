@@ -25,7 +25,7 @@ extension Array: MutableRandomAccessCollection {
 
   /// Last element of array.
   ///
-  /// - Precondition: `isEmpty()`.
+  /// - Precondition: `!isEmpty()`.
   var last: Element {
     _read {
       yield self[self.endIndex - 1]
@@ -40,15 +40,15 @@ extension Array: MutableRandomAccessCollection {
     swapAt(self.startIndex, self.endIndex - 1)
   }
 
-  /// Calls `f` with a slice containing all elements of `self`.
-  /// Returns the value returned by `f`.
+  /// Returns the result of passing to `f` the slice of `self` which contains
+  /// all elements of `self`.
   func withSlice<R>(_ f: (inout SubSeq) -> R) -> R {
     var s = makeSlice()
     return f(&s)
   }
 
-  /// Calls `f` with a slice containing all elements of `self`.
-  /// Returns the value returned by `f`.
+  /// Returns the result of passing to `f` the slice of `self` which contains
+  /// all elements of `self`.
   mutating func withMutableSlice<R>(_ f: (inout SubSeq) -> R) -> R {
     var s = makeSlice()
     let res = f(&s)
@@ -56,15 +56,15 @@ extension Array: MutableRandomAccessCollection {
     return res
   }
 
-  /// Returns the result of passing to `f` the partitioning of `self` whose
-  /// whose last part contains all elements and other parts are empty.
+  /// Returns the result of passing to `f` the partitioning of `self`
+  /// whose all parts except last part is empty.
   func withParts<R>(count partitionCount: Int, _ f: (inout Parts) -> R) -> R {
     var partition = SlicePartitioning(makeSlice(), into: partitionCount)
     return f(&partition)
   }
 
-  /// Returns the result of passing to `f` the partitioning of `self` whose
-  /// whose last part contains all elements and other parts are empty.
+  /// Returns the result of passing to `f` the partitioning of `self`
+  /// whose all parts except last part is empty.
   mutating func withMutableParts<R>(count partitionCount: Int, _ f: (inout Parts) -> R) -> R {
     var partition = SlicePartitioning(makeSlice(), into: partitionCount)
     let res = f(&partition)
@@ -72,6 +72,7 @@ extension Array: MutableRandomAccessCollection {
     return res
   }
 
+  /// Retruns a Swift stdlib slice that contains all elements of collection.
   private func makeSlice() -> Swift.Slice<Self> {
     return Swift.Slice(base: self, bounds: startIndex..<endIndex)
   }

@@ -60,6 +60,6 @@ where
 {
   /// The last element of the collection.
   ///
-  /// - Precondition: !self.isEmpty()
+  /// - Precondition: `!isEmpty()`
   var last: Element { get }
 }

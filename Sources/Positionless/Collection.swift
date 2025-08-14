@@ -119,7 +119,7 @@ protocol Collection<Element>: ~Copyable {
 
   /// The first element of the collection.
   ///
-  /// - Precondition: !self.isEmpty()
+  /// - Precondition: `!isEmpty()`
   var first: Element { get }
 
   /// Returns the result of passing to `f` the partitioning of `self`
