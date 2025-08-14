@@ -4,6 +4,7 @@ extension MutablePartitioning {
   /// reordering elements within each parts.
   ///
   /// - Precondition: `partitionCount == 2`.
+  ///
   /// - Complexity: no more than `count` swaps.
   mutating func rotate() {
     withAdditionalParts(2) { p in
@@ -59,10 +60,7 @@ extension MutablePartitioning {
 
         if self[part: 1].isEmpty() {
           // Second case:
-          //
-          // More elements from parts[3] needs to be in parts[0]. Thus make the
-          // quadrisection again in D | F | E | S form to again perform exchange
-          // loop.
+          // More elements from parts[3] needs to be in parts[0].
           //
           // [d e f | a b c | _ | g h i j]
           transferAllToPrev(from: 2)
@@ -70,8 +68,8 @@ extension MutablePartitioning {
       }
 
       // When parts[3] is empty, parts[0] contain the final elements after rotation.
-      // But parts[1] and parts[2] might not be in right order. So, make them
-      // in D | F | E | S form.
+      // But parts[1] and parts[2] might not be in right order. So reorder them
+      // to maintain loop invariant.
       //
       // First case:
       // [h i j | d e f g | _ | a b c]

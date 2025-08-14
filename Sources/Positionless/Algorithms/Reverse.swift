@@ -1,7 +1,7 @@
 extension MutableBidirectionalCollection {
   /// Reverses the order of elements in `self`.
   ///
-  /// - Complexity: O(n)
+  /// - Complexity: Exactly `count`/2 swaps.
   mutating func reverse_() {  // FIXME: _ after reverse is to avoid ambiguity with stdlib reverse.
     withMutableSlice { rest in
       while !rest.isEmpty() {
