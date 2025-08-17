@@ -1,7 +1,7 @@
 extension MutablePartitioning {
 
   /// Exchanges the elements of `parts[0]` with those of `parts[1]` without
-  /// reordering elements within each parts.
+  /// reordering elements within each part.
   ///
   /// - Precondition: `partitionCount == 2`.
   ///
