@@ -10,7 +10,7 @@ extension MutablePartitioning {
     withAdditionalMutableParts(2) { p in
       p.shiftSections(from: 1, to: 3)
       p.transferAllToNext(from: 0)
-      p.rotateQuadrisection(partitionPointMatters: true)
+      p.rotateQuadrisection(adoptNewPartitioning: true)
     }
   }
 
@@ -27,7 +27,7 @@ extension MutablePartitioning {
   ///     maintaining relative ordering.
   ///
   /// - Complexity: no more than `count` swaps.
-  private mutating func rotateQuadrisection(partitionPointMatters: Bool) {
+  private mutating func rotateQuadrisection(adoptNewPartitioning: Bool) {
     // Loop Invariant:
     // - After every iteration, `part[0]` would contain elements moved from
     //   `part[3]` with same relative ordering.
@@ -75,13 +75,13 @@ extension MutablePartitioning {
       // [h i j | d e f g | _ | a b c]
       transferAllToNext(from: 2)  // This results a subproblem for rotate.
 
-      if partitionPointMatters {
+      if adoptNewPartitioning {
         // parts[0] boundary should not be touched, so recurse on self projection to
         // preserve boundaries and break as rotation should be done.
         //
         // First case:
         // [h i j | a b c d | _ | e f g]
-        withMutableProjection { $0.rotateQuadrisection(partitionPointMatters: false) }
+        withMutableProjection { $0.rotateQuadrisection(adoptNewPartitioning: false) }
         break
       }
       // else solve the subproblem in while loop.
