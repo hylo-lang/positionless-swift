@@ -54,6 +54,18 @@ protocol Partitioning: ~Copyable {
   /// - Precondition: `i < partitionCount - 1`.
   mutating func transferAllToNext(from i: Int)
 
+  /// Returns the result of passing to `f` the projection of self with
+  /// `n` additional empty parts at end.
+  ///
+  /// - Precondition: `n >= 0`.
+  ///
+  /// - Postcondition: `self` adopts the boundaries of projected partitioning.
+  /// The elements in additional parts of projection are appended to last part.
+  mutating func withAdditionalParts<R>(_ n: Int, _ f: (inout SubSeq.Parts) -> R) -> R
+
+  /// Returns the result of passing to `f` the independent projection of `self`.
+  mutating func withProjection<R>(_ f: (inout SubSeq.Parts) -> R) -> R
+
 }
 
 extension Partitioning {

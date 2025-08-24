@@ -7,7 +7,7 @@ extension MutablePartitioning {
   ///
   /// - Complexity: no more than `count` swaps.
   mutating func rotate() {
-    withAdditionalParts(2) { p in
+    withAdditionalMutableParts(2) { p in
       p.shiftSections(from: 1, to: 3)
       p.transferAllToNext(from: 0)
       p.rotateQuadrisection(partitionPointMatters: true)
@@ -81,7 +81,7 @@ extension MutablePartitioning {
         //
         // First case:
         // [h i j | a b c d | _ | e f g]
-        withProjection { $0.rotateQuadrisection(partitionPointMatters: false) }
+        withMutableProjection { $0.rotateQuadrisection(partitionPointMatters: false) }
         break
       }
       // else solve the subproblem in while loop.
