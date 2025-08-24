@@ -1,3 +1,21 @@
+extension Partitioning {
+
+  /// Grows given part until first element next part satisfies given predicate or becomes empty.
+  ///
+  /// - Precondition: `i < partitionCount - 1`
+  ///
+  /// - Complexity: No more than `self[part: i + 1].count` to `grow`.
+  mutating func grow(part i: Int, until predicate: (SubSeq.Element) -> Bool) {
+    while !self[part: i + 1].isEmpty() {
+      if predicate(self[part: i + 1].first) {
+        break
+      }
+      grow(part: i)
+    }
+  }
+
+}
+
 extension Collection {
 
   /// Splits the collection at the first element that satisfies the given predicate.
@@ -12,12 +30,7 @@ extension Collection {
     _ f: (inout Parts) -> R
   ) -> R {
     return withParts(count: 2) { p in
-      while !p[part: 1].isEmpty() {
-        if predicate(p[part: 1].first) {
-          break
-        }
-        p.grow(part: 0)
-      }
+      p.grow(part: 0, until: predicate)
       return f(&p)
     }
   }
@@ -55,12 +68,7 @@ extension MutableCollection {
     -> R
   {
     return withMutableParts(count: 2) { p in
-      while !p[part: 1].isEmpty() {
-        if predicate(p[part: 1].first) {
-          break
-        }
-        p.grow(part: 0)
-      }
+      p.grow(part: 0, until: predicate)
       return f(&p)
     }
   }
