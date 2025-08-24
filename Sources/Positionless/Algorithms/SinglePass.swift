@@ -23,6 +23,13 @@ extension Collection {
     }
   }
 
+  /// Returns true iff all elements satisfy the given predicate.
+  ///
+  /// - Complexity: No more than `count` application of `predicate`.
+  func all(satisfy predicate: (Element) -> Bool) -> Bool {
+    return !forEach(until: { !predicate($0) })
+  }
+
   /// Returns the number of elements.
   func count() -> Int {
     var r = 0
