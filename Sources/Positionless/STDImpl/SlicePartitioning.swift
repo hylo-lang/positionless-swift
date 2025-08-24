@@ -70,6 +70,15 @@ extension SlicePartitioning: Partitioning {
     return res
   }
 
+  mutating func withParts<R>(from: Int, to: Int, _ f: (inout SubSeq.Parts) -> R) -> R {
+    var partition = SlicePartitioning(storage, Array(partitionStartIndexes[from...to + 1]))
+    let res = f(&partition)
+    for i in from...to {
+      partitionStartIndexes[i] = partition.partitionStartIndexes[i]
+    }
+    return res
+  }
+
   mutating func withProjection<R>(_ f: (inout SlicePartitioning<Base>) -> R) -> R {
     var projection = SlicePartitioning(storage, partitionStartIndexes)
     return f(&projection)
@@ -139,6 +148,18 @@ where Base: Swift.MutableCollection {
       storage, partitionStartIndexes + Array(repeating: partitionStartIndexes.last!, count: n))
     let res = f(&partition)
     for i in 1..<partitionCount {
+      partitionStartIndexes[i] = partition.partitionStartIndexes[i]
+    }
+    _writeBackElements(from: partition.storage, to: &storage)
+    return res
+  }
+
+  mutating func withMutableParts<R>(
+    from: Int, to: Int, _ f: (inout MutableSubSeq.MutableParts) -> R
+  ) -> R {
+    var partition = SlicePartitioning(storage, Array(partitionStartIndexes[from...to + 1]))
+    let res = f(&partition)
+    for i in from + 1...to {
       partitionStartIndexes[i] = partition.partitionStartIndexes[i]
     }
     _writeBackElements(from: partition.storage, to: &storage)

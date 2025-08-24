@@ -31,6 +31,19 @@ protocol MutablePartitioning: Partitioning {
     _ n: Int, _ f: (inout MutableSubSeq.MutableParts) -> R
   ) -> R
 
+  /// Returns the result of passing to `f` the mutable projection of self containing
+  /// parts in `[from, to]`.
+  ///
+  /// - Precondition:
+  ///   - `from <= to`
+  ///   - `from >= 0 && from < partitionCount`.
+  ///   - `to >= 0 && to < partitionCount`.
+  ///
+  /// - Postcondition: `self` adopts the boundaries of projected partitioning.
+  mutating func withMutableParts<R>(
+    from: Int, to: Int, _ f: (inout MutableSubSeq.MutableParts) -> R
+  ) -> R
+
   /// Returns the result of passing to `f` the independent mutable projection of `self`.
   mutating func withMutableProjection<R>(
     _ f: (inout MutableSubSeq.MutableParts) -> R
