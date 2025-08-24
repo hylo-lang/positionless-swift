@@ -6,6 +6,9 @@ protocol MutablePartitioning: Partitioning {
 
   /// The type of each part subsequence.
   associatedtype MutableSubSeq: MutableSlice
+  where
+    MutableSubSeq.Element == SubSeq.Element,
+    MutableSubSeq.SubSeq == SubSeq
 
   /// Swaps first element partition i and j.
   ///
