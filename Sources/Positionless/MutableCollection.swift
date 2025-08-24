@@ -2,8 +2,10 @@
 protocol MutableSlice: Slice, MutableCollection {}
 
 /// Partition obtained from a `MutableCollection`.
-protocol MutablePartitioning: Partitioning
-where SubSeq: MutableSlice {
+protocol MutablePartitioning: Partitioning {
+
+  /// The type of each part subsequence.
+  associatedtype MutableSubSeq: MutableSlice
 
   /// Swaps first element partition i and j.
   ///
@@ -13,10 +15,10 @@ where SubSeq: MutableSlice {
   /// The parts.
   ///
   /// Invariant: `parts.count == partitionCount`
-  var parts: FixedArray<SubSeq> { get set }
+  var mutableParts: FixedArray<MutableSubSeq> { get set }
 
   /// `i`th part.
-  subscript(part i: Int) -> SubSeq { get set }
+  subscript(mutablePart i: Int) -> MutableSubSeq { get set }
 
   /// Returns the result of passing to `f` the mutable projection of self with
   /// `n` additional empty parts at end.
@@ -25,19 +27,34 @@ where SubSeq: MutableSlice {
   ///
   /// - Postcondition: `self` adopts the boundaries of projected partitioning.
   /// The elements in additional parts of projection are appended to last part.
-  mutating func withAdditionalParts<R>(_ n: Int, _ f: (inout Self) -> R) -> R
+  mutating func withAdditionalMutableParts<R>(
+    _ n: Int, _ f: (inout MutableSubSeq.MutableParts) -> R
+  ) -> R
 
-  /// Returns the result of passing to `f` the independent projection of `self`.
-  mutating func withProjection<R>(_ f: (inout Self) -> R) -> R
+  /// Returns the result of passing to `f` the independent mutable projection of `self`.
+  mutating func withMutableProjection<R>(
+    _ f: (inout MutableSubSeq.MutableParts) -> R
+  ) -> R
 
 }
 
 /// A collection that supports mutation of elements.
-protocol MutableCollection: Collection
-where
-  SubSeq: MutableSlice,
-  Parts: MutablePartitioning
-{
+protocol MutableCollection: Collection {
+
+  /// Type of mutable subsequence of collection.
+  associatedtype MutableSubSeq: MutableSlice
+  where
+    MutableSubSeq.Element == Element,
+    MutableSubSeq.MutableSubSeq == MutableSubSeq,
+    MutableSubSeq.SubSeq == SubSeq,
+    MutableSubSeq.MutableParts == MutableParts,
+    MutableSubSeq.Parts == Parts
+
+  /// A mutable partitioning of `Self` into n disjoint contiguous SubSeq.
+  associatedtype MutableParts: MutablePartitioning
+  where
+    MutableParts.MutableSubSeq == MutableSubSeq,
+    MutableParts.SubSeq == SubSeq
 
   /// The first element of the collection.
   ///
@@ -46,9 +63,12 @@ where
 
   /// Returns the result of passing to `f` the slice of `self` which contains
   /// all elements of `self`.
-  mutating func withMutableSlice<R>(_ f: (inout SubSeq) -> R) -> R
+  mutating func withMutableSlice<R>(_ f: (inout MutableSubSeq) -> R) -> R
 
   /// Returns the result of passing to `f` the partitioning of `self`
   /// whose all parts except last part is empty.
-  mutating func withMutableParts<R>(count partitionCount: Int, _ f: (inout Parts) -> R) -> R
+  mutating func withMutableParts<R>(
+    count partitionCount: Int,
+    _ f: (inout MutableParts) -> R
+  ) -> R
 }

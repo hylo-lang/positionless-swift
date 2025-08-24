@@ -6,6 +6,12 @@ extension Array: MutableRandomAccessCollection {
   /// Separation of array into contiguous partitions.
   typealias Parts = SlicePartitioning<Self>
 
+  /// Mutable Subsequence of array.
+  typealias MutableSubSeq = Swift.Slice<Self>
+
+  /// Mutable Separation of array into contiguous partitions.
+  typealias MutableParts = SlicePartitioning<Self>
+
   /// Returns true iff array doesn't contain any element.
   func isEmpty() -> Bool {
     isEmpty
@@ -49,7 +55,7 @@ extension Array: MutableRandomAccessCollection {
 
   /// Returns the result of passing to `f` the slice of `self` which contains
   /// all elements of `self`.
-  mutating func withMutableSlice<R>(_ f: (inout SubSeq) -> R) -> R {
+  mutating func withMutableSlice<R>(_ f: (inout MutableSubSeq) -> R) -> R {
     var s = makeSlice()
     let res = f(&s)
     _writeBackElements(from: s, to: &self)
@@ -65,7 +71,8 @@ extension Array: MutableRandomAccessCollection {
 
   /// Returns the result of passing to `f` the partitioning of `self`
   /// whose all parts except last part is empty.
-  mutating func withMutableParts<R>(count partitionCount: Int, _ f: (inout Parts) -> R) -> R {
+  mutating func withMutableParts<R>(count partitionCount: Int, _ f: (inout MutableParts) -> R) -> R
+  {
     var partition = SlicePartitioning(makeSlice(), into: partitionCount)
     let res = f(&partition)
     _writeBackElements(from: partition.storage, to: &self)

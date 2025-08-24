@@ -2,11 +2,11 @@
 protocol MutableRandomAccessSlice: MutableBidirectionalSlice, RandomAccessCollection {}
 
 protocol MutableRandomAccessPartitioning: MutableBidirectionalPartitioning
-where SubSeq: MutableRandomAccessSlice {}
+where MutableSubSeq: MutableRandomAccessSlice {}
 
 /// A collection which supports mutating its element and random access traversal mutable
 protocol MutableRandomAccessCollection: MutableBidirectionalCollection, RandomAccessCollection
 where
-  SubSeq: MutableRandomAccessSlice,
-  Parts: MutableRandomAccessPartitioning
+  MutableSubSeq: MutableRandomAccessSlice,
+  MutableParts: MutableRandomAccessPartitioning
 {}

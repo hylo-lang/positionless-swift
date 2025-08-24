@@ -63,6 +63,10 @@ where Base: Swift.RandomAccessCollection {}
 
 extension Swift.Slice: MutableCollection
 where Base: Swift.MutableCollection {
+  typealias MutableSubSeq = Self
+
+  typealias MutableParts = SlicePartitioning<Base>
+
   var first: Element {
     _read {
       yield self[self.startIndex]
@@ -72,7 +76,7 @@ where Base: Swift.MutableCollection {
     }
   }
 
-  mutating func withMutableSlice<R>(_ f: (inout Swift.Slice<Base>) -> R) -> R {
+  mutating func withMutableSlice<R>(_ f: (inout MutableSubSeq) -> R) -> R {
     var projection = self
     let res = f(&projection)
     _writeBackElements(from: projection, to: &self[...])
@@ -80,7 +84,7 @@ where Base: Swift.MutableCollection {
   }
 
   mutating func withMutableParts<R>(
-    count partitionCount: Int, _ f: (inout SlicePartitioning<Base>) -> R
+    count partitionCount: Int, _ f: (inout MutableParts) -> R
   ) -> R {
     var parts = SlicePartitioning(self, into: partitionCount)
     let res = f(&parts)
