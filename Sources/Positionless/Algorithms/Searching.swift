@@ -6,7 +6,10 @@ extension Collection {
   ///   - `part[1]` contains the first matching element and all elements after it.
   ///
   /// - Complexity: O(`count`).
-  func splitFirst<R>(where predicate: (Element) -> Bool, _ f: (inout Parts) -> R) -> R {
+  func splitFirst<R>(
+    where predicate: (Element) -> Bool,
+    _ f: (inout Parts) -> R
+  ) -> R {
     return withParts(count: 2) { p in
       while !p[part: 1].isEmpty() {
         if predicate(p[part: 1].first) {
@@ -27,7 +30,10 @@ extension MutableCollection {
   ///   - `part[1]` contains the first matching element and all elements after it.
   ///
   /// - Complexity: O(`count`).
-  mutating func splitFirstMut<R>(where predicate: (Element) -> Bool, _ f: (inout Parts) -> R)
+  mutating func mutableSplitFirst<R>(
+    where predicate: (Element) -> Bool,
+    _ f: (inout Parts) -> R
+  )
     -> R
   {
     return withMutableParts(count: 2) { p in
