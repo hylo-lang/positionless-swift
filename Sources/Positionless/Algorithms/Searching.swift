@@ -1,6 +1,6 @@
 extension Partitioning {
 
-  /// Grows given part until first element next part satisfies given predicate or becomes empty.
+  /// Grows given part until first element of next part satisfies `predicate` or becomes empty.
   ///
   /// - Precondition: `i < partitionCount - 1`
   ///
@@ -63,7 +63,7 @@ extension MutableCollection {
   /// - Complexity: O(`count`).
   mutating func mutableSplitFirst<R>(
     where predicate: (Element) -> Bool,
-    _ f: (inout Parts) -> R
+    _ f: (inout MutableParts) -> R
   )
     -> R
   {
@@ -82,7 +82,7 @@ extension MutableCollection {
   /// - Complexity: O(`count`).
   mutating func mutableSplitFirst<R>(
     on e: Element,
-    _ f: (inout Parts) -> R
+    _ f: (inout MutableParts) -> R
   ) -> R
   where Element: Equatable {
     mutableSplitFirst(where: { $0 == e }, f)
