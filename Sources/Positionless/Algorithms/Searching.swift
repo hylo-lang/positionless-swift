@@ -1,4 +1,5 @@
 extension Collection {
+
   /// Splits the collection at the first element that satisfies the given predicate.
   ///
   /// - Postcondition:
@@ -20,9 +21,26 @@ extension Collection {
       return f(&p)
     }
   }
+
+  /// Splits the collection at the first element that is equal to given element.
+  ///
+  /// - Postcondition:
+  ///   - `part[0]` contains all elements before the first match.
+  ///   - `part[1]` contains the first matching element and all elements after it.
+  ///
+  /// - Complexity: O(`count`).
+  func splitFirst<R>(
+    on e: Element,
+    _ f: (inout Parts) -> R
+  ) -> R
+  where Element: Equatable {
+    splitFirst(where: { $0 == e }, f)
+  }
+
 }
 
 extension MutableCollection {
+
   /// Splits the collection at the first element that satisfies the given predicate.
   ///
   /// - Postcondition:
@@ -46,4 +64,20 @@ extension MutableCollection {
       return f(&p)
     }
   }
+
+  /// Splits the collection at the first element that is equal to given element.
+  ///
+  /// - Postcondition:
+  ///   - `part[0]` contains all elements before the first match.
+  ///   - `part[1]` contains the first matching element and all elements after it.
+  ///
+  /// - Complexity: O(`count`).
+  mutating func mutableSplitFirst<R>(
+    on e: Element,
+    _ f: (inout Parts) -> R
+  ) -> R
+  where Element: Equatable {
+    mutableSplitFirst(where: { $0 == e }, f)
+  }
+
 }
