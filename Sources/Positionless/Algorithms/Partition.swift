@@ -1,6 +1,6 @@
 extension MutableCollection {
   /// Reorders the collection in place so that all elements matching the predicate
-  /// are moved into the suffix, preserving the relative order of the non-matching
+  /// are moved into the suffix, preserving the relative order of only non-matching
   /// elements. The resulting partition is then projected and passed to `f`.
   ///
   /// - Postcondition: For resulting partition `p`, `p.partitionCount == 2`.
@@ -19,7 +19,7 @@ extension MutableCollection {
         /// Loop Invariant:
         /// - `trisection[part: 0]` contains elements that don't satisfy the predicate.
         /// - `trisection[part: 1]` contains elements that satisfy the predicate.
-        /// - `trisection[part: 2]` contain remaining elements to be processed.
+        /// - `trisection[part: 2]` contains the unexamined remainder of collection.
         while !trisection[part: 2].isEmpty() {
           if predicate(trisection[part: 2].first) {
             trisection.grow(part: 1)
