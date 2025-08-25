@@ -2,7 +2,8 @@ extension MutableCollection {
 
   /// Reorders the collection in place so that all elements matching the predicate
   /// are moved into the suffix, preserving the relative order of only non-matching
-  /// elements. The resulting partition is then projected and passed to `f`.
+  /// elements. The resulting partition is then projected and passed to `f` with
+  /// returning its result.
   ///
   /// - Postcondition: For resulting partition `p`, `p.partitionCount == 2`.
   ///
@@ -10,15 +11,15 @@ extension MutableCollection {
   mutating func halfStablePartition<R>(by predicate: (Element) -> Bool, _ f: (MutableParts) -> R)
     -> R
   {
-    return withMutableParts(count: 2) {
-      $0.halfStablePartition(by: predicate)
-      return f($0)
+    return withMutableParts(count: 2) { p in
+      p.halfStablePartition(by: predicate)
+      return f(p)
     }
   }
 
   /// Reorders the collection in place so that all elements matching the predicate
   /// are moved into the suffix, preserving the relative order of each part.
-  /// The resulting partition is then projected and passed to `f`.
+  /// The resulting partition is then projected and passed to `f` with returning its result.
   ///
   /// - Postcondition: For resulting partition `p`, `p.partitionCount == 2`.
   ///
@@ -127,4 +128,5 @@ extension MutablePartitioning {
       p.shiftSections(from: 3, to: 1)  // prefix | suffix | _ | _
     }
   }
+
 }
