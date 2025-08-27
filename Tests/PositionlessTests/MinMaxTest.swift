@@ -81,3 +81,59 @@ import Testing
   }
 
 }
+
+@Suite("max(by: )") struct MaxBy {
+
+  @Test func whenThereExistsMultipleMaxElements() {
+    let arr = [8, 1, 2, 4, 8, 3, 5]
+    #expect(arr.max_(by: { $0 < $1 }) == 8)
+  }
+
+  @Test func forEmptyCollection() {
+    let arr: [Int] = []
+    #expect(arr.max_(by: { $0 < $1 }) == nil)
+  }
+
+}
+
+@Suite("min(by: )") struct MinBy {
+
+  @Test func whenThereExistsMultipleMaxElements() {
+    let arr = [8, 1, 2, 4, 8, 3, 5]
+    #expect(arr.min_(by: { $0 < $1 }) == 1)
+  }
+
+  @Test func forEmptyCollection() {
+    let arr: [Int] = []
+    #expect(arr.min_(by: { $0 < $1 }) == nil)
+  }
+
+}
+
+@Suite("max()") struct Max {
+
+  @Test func whenThereExistsMultipleMaxElements() {
+    let arr = [8, 1, 2, 4, 8, 3, 5]
+    #expect(arr.max_() == 8)
+  }
+
+  @Test func forEmptyCollection() {
+    let arr: [Int] = []
+    #expect(arr.max_() == nil)
+  }
+
+}
+
+@Suite("min()") struct Min {
+
+  @Test func whenThereExistsMultipleMaxElements() {
+    let arr = [8, 1, 2, 4, 8, 3, 5]
+    #expect(arr.min_() == 1)
+  }
+
+  @Test func forEmptyCollection() {
+    let arr: [Int] = []
+    #expect(arr.min_() == nil)
+  }
+
+}
