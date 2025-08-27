@@ -6,6 +6,9 @@ protocol MutablePartitioning: Partitioning {
 
   /// The type of each part subsequence.
   associatedtype MutableSubSeq: MutableSlice
+  where
+    MutableSubSeq.Element == SubSeq.Element,
+    MutableSubSeq.SubSeq == SubSeq
 
   /// Swaps first element partition i and j.
   ///
@@ -29,6 +32,19 @@ protocol MutablePartitioning: Partitioning {
   /// The elements in additional parts of projection are appended to last part.
   mutating func withAdditionalMutableParts<R>(
     _ n: Int, _ f: (inout MutableSubSeq.MutableParts) -> R
+  ) -> R
+
+  /// Returns the result of passing to `f` the mutable projection of self containing
+  /// parts in `[from, to]`.
+  ///
+  /// - Precondition:
+  ///   - `from <= to`
+  ///   - `from >= 0 && from < partitionCount`.
+  ///   - `to >= 0 && to < partitionCount`.
+  ///
+  /// - Postcondition: `self` adopts the boundaries of projected partitioning.
+  mutating func withMutableParts<R>(
+    from: Int, to: Int, _ f: (inout MutableSubSeq.MutableParts) -> R
   ) -> R
 
   /// Returns the result of passing to `f` the independent mutable projection of `self`.
