@@ -2,10 +2,6 @@ import Testing
 
 @testable import Positionless
 
-private func isOdd(_ n: Int) -> Bool {
-  return n % 2 == 1
-}
-
 @Suite("splitBeforeMaxElement(by: )") struct MaxElement {
 
   @Test func whenThereExistsMultipleMaxElements() {
@@ -19,6 +15,26 @@ private func isOdd(_ n: Int) -> Bool {
   @Test func forEmptyCollection() {
     let arr: [Int] = []
     arr.splitBeforeMaxElement(by: { $0 < $1 }) { p in
+      #expect(p[part: 0] == [])
+      #expect(p[part: 1] == [])
+    }
+  }
+
+}
+
+@Suite("splitBeforeMinElement(by: )") struct MinElement {
+
+  @Test func whenThereExistsMultipleMaxElements() {
+    let arr = [8, 2, 1, 4, 1, 3, 5]
+    arr.splitBeforeMinElement(by: { $0 < $1 }) { p in
+      #expect(p[part: 0] == [8, 2])
+      #expect(p[part: 1] == [1, 4, 1, 3, 5])
+    }
+  }
+
+  @Test func forEmptyCollection() {
+    let arr: [Int] = []
+    arr.splitBeforeMinElement(by: { $0 < $1 }) { p in
       #expect(p[part: 0] == [])
       #expect(p[part: 1] == [])
     }
