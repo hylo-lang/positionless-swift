@@ -63,6 +63,17 @@ protocol Partitioning: ~Copyable {
   /// The elements in additional parts of projection are appended to last part.
   mutating func withAdditionalParts<R>(_ n: Int, _ f: (inout SubSeq.Parts) -> R) -> R
 
+  /// Returns the result of passing to `f` the projection of self containing
+  /// parts in `[from, to]`.
+  ///
+  /// - Precondition:
+  ///   - `from <= to`
+  ///   - `from >= 0 && from < partitionCount`.
+  ///   - `to >= 0 && to < partitionCount`.
+  ///
+  /// - Postcondition: `self` adopts the boundaries of projected partitioning.
+  mutating func withParts<R>(from: Int, to: Int, _ f: (inout SubSeq.Parts) -> R) -> R
+
   /// Returns the result of passing to `f` the independent projection of `self`.
   mutating func withProjection<R>(_ f: (inout SubSeq.Parts) -> R) -> R
 
