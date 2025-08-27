@@ -44,6 +44,46 @@ extension Collection {
     }
   }
 
+  /// Splits the collection into partitioning of 2 so that the first element of the
+  /// second part is the maximum element, and then applies `f` to the partition.
+  ///
+  /// - Postcondition:
+  ///   - If the collection is empty, the second part is empty.
+  ///   - If there are multiple maximum elements, the second part begins at
+  ///     the last maximum element.
+  ///
+  /// - Complexity:
+  ///   At most `max(count - 1, 0)` comparisions.
+  func splitBeforeMaxElement<R>(_ f: (Parts) -> R) -> R
+  where
+    Element: Comparable
+  {
+    return withParts(count: 2) { p in
+      p.growUntilMaxElement()
+      return f(p)
+    }
+  }
+
+  /// Splits the collection into partitioning of 2 so that the first element of the
+  /// second part is the minimum element, and then applies `f` to the partition.
+  ///
+  /// - Postcondition:
+  ///   - If the collection is empty, the second part is empty.
+  ///   - If there are multiple minimum elements, the second part begins at
+  ///     the first minimum element.
+  ///
+  /// - Complexity:
+  ///   At most `max(count - 1, 0)` comparisions.
+  func splitBeforeMinElement<R>(_ f: (Parts) -> R) -> R
+  where
+    Element: Comparable
+  {
+    return withParts(count: 2) { p in
+      p.growUntilMinElement()
+      return f(p)
+    }
+  }
+
 }
 
 extension MutableCollection {
@@ -88,6 +128,46 @@ extension MutableCollection {
   ) -> R {
     return withMutableParts(count: 2) { p in
       p.growUntilMinElement(by: isLessThan)
+      return f(p)
+    }
+  }
+
+  /// Splits the collection into mutatble partitioning of 2 so that the first element of the
+  /// second part is the maximum element, and then applies `f` to the partition.
+  ///
+  /// - Postcondition:
+  ///   - If the collection is empty, the second part is empty.
+  ///   - If there are multiple maximum elements, the second part begins at
+  ///     the last maximum element.
+  ///
+  /// - Complexity:
+  ///   At most `max(count - 1, 0)` comparisions.
+  mutating func mutableSplitBeforeMaxElement<R>(_ f: (MutableParts) -> R) -> R
+  where
+    Element: Comparable
+  {
+    return withMutableParts(count: 2) { p in
+      p.growUntilMaxElement()
+      return f(p)
+    }
+  }
+
+  /// Splits the collection into mutatble partitioning of 2 so that the first element of the
+  /// second part is the minimum element, and then applies `f` to the partition.
+  ///
+  /// - Postcondition:
+  ///   - If the collection is empty, the second part is empty.
+  ///   - If there are multiple minimum elements, the second part begins at
+  ///     the first minimum element.
+  ///
+  /// - Complexity:
+  ///   At most `max(count - 1, 0)` comparisions.
+  mutating func mutableSplitBeforeMinElement<R>(_ f: (MutableParts) -> R) -> R
+  where
+    Element: Comparable
+  {
+    return withMutableParts(count: 2) { p in
+      p.growUntilMinElement()
       return f(p)
     }
   }
@@ -158,6 +238,46 @@ extension Partitioning {
         p.grow(part: 1)
       }
     }
+  }
+
+  /// Adjusts the boundary so that the second part begins at the last maximum element.
+  ///
+  /// - Precondition:
+  ///   - `partitionCount == 2`
+  ///   - `self[part: 0].isEmpty()`,
+  ///
+  /// - Postcondition:
+  ///   - If `self[part: 1]` is empty, the partition is unchanged.
+  ///   - If multiple elements are maximal, the boundary is placed
+  ///     before the last such element.
+  ///
+  /// - Complexity:
+  ///   At most `max(n - 1, 0)` comparisions, where `n == self[part: 1].count`.
+  mutating func growUntilMaxElement()
+  where
+    SubSeq.Element: Comparable
+  {
+    growUntilMaxElement(by: <)
+  }
+
+  /// Adjusts the boundary so that the second part begins at the first maximum element.
+  ///
+  /// - Precondition:
+  ///   - `partitionCount == 2`
+  ///   - `self[part: 0].isEmpty()`,
+  ///
+  /// - Postcondition:
+  ///   - If `self[part: 1]` is empty, the partition is unchanged.
+  ///   - If multiple elements are minimal, the boundary is placed
+  ///     before the first such element.
+  ///
+  /// - Complexity:
+  ///   At most `max(n - 1, 0)` comparisions, where `n == self[part: 1].count`.
+  mutating func growUntilMinElement()
+  where
+    SubSeq.Element: Comparable
+  {
+    growUntilMinElement(by: <)
   }
 
 }
