@@ -84,6 +84,8 @@ protocol Partitioning: ~Copyable {
   /// - Precondition: `chunkSize > 0`.
   ///
   /// - Postcondition: `self` adopts the boundaries of projected partitionings.
+  ///
+  /// - Complexity: O(`chunkSize`).
   mutating func withChunks<R>(of chunkSize: Int, _ f: (inout FixedArray<SubSeq.Parts>) -> R) -> R
 
 }

@@ -59,6 +59,8 @@ protocol MutablePartitioning: Partitioning {
   /// - Precondition: `chunkSize > 0`.
   ///
   /// - Postcondition: `self` adopts the boundaries of projected partitionings.
+  ///
+  /// - Complexity: O(`chunkSize`).
   mutating func withMutableChunks<R>(
     of: Int, _ f: (inout FixedArray<MutableSubSeq.MutableParts>) -> R
   )
