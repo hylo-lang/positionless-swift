@@ -77,6 +77,8 @@ protocol Partitioning: ~Copyable {
   /// Returns the result of passing to `f` the independent projection of `self`.
   mutating func withProjection<R>(_ f: (inout SubSeq.Parts) -> R) -> R
 
+  mutating func withChunks<R>(of: Int, _ f: (inout FixedArray<SubSeq.Parts>) -> R) -> R
+
 }
 
 extension Partitioning {

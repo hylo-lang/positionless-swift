@@ -52,6 +52,10 @@ protocol MutablePartitioning: Partitioning {
     _ f: (inout MutableSubSeq.MutableParts) -> R
   ) -> R
 
+  mutating func withMutableChunks<R>(
+    of: Int, _ f: (inout FixedArray<MutableSubSeq.MutableParts>) -> R
+  )
+    -> R
 }
 
 /// A collection that supports mutation of elements.

@@ -1,7 +1,7 @@
 /// An array whose shape can't be changed. Only elements are mutable.
 struct FixedArray<Element> {
   /// Actual storage of elements.
-  private var storage: [Element]
+  internal var storage: [Element]
 
   /// Creates an instance from given array.
   public init(_ storage: [Element]) {

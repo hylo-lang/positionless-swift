@@ -84,6 +84,31 @@ extension SlicePartitioning: Partitioning {
     return f(&projection)
   }
 
+  mutating func withChunks<R>(
+    of chunkSize: Int, _ f: (inout FixedArray<SlicePartitioning<Base>>) -> R
+  ) -> R {
+    let partitions: [SlicePartitioning<Base>] =
+      stride(from: 0, to: partitionCount, by: chunkSize).map { start in
+        let end = Swift.min(start + chunkSize, partitionCount)
+        return SlicePartitioning(
+          storage[partitionStartIndexes[start]..<partitionStartIndexes[end]],
+          Array(partitionStartIndexes[start...end]))
+      }
+
+    var fixed = FixedArray(partitions)
+    let result = f(&fixed)
+
+    var writeIndex = 1
+    fixed.storage.forEach { partitioning in
+      partitioning.partitionStartIndexes.dropFirst().dropLast().forEach {
+        partitionStartIndexes[writeIndex] = $0
+        writeIndex += 1
+      }
+    }
+
+    return result
+  }
+
 }
 
 extension SlicePartitioning: BidirectionalPartitioning
@@ -171,6 +196,35 @@ where Base: Swift.MutableCollection {
     let res = f(&projection)
     _writeBackElements(from: projection.storage, to: &storage)
     return res
+  }
+
+  mutating func withMutableChunks<R>(
+    of chunkSize: Int, _ f: (inout FixedArray<SlicePartitioning<Base>>) -> R
+  ) -> R {
+    let partitions: [SlicePartitioning<Base>] =
+      stride(from: 0, to: partitionCount, by: chunkSize).map { start in
+        let end = Swift.min(start + chunkSize, partitionCount)
+        return SlicePartitioning(
+          storage[partitionStartIndexes[start]..<partitionStartIndexes[end]],
+          Array(partitionStartIndexes[start...end]))
+      }
+
+    var fixed = FixedArray(partitions)
+    let result = f(&fixed)
+
+    for part in fixed.storage {
+      _writeBackElements(from: part.storage, to: &storage)
+    }
+
+    var writeIndex = 1
+    fixed.storage.forEach { partitioning in
+      partitioning.partitionStartIndexes.dropFirst().dropLast().forEach {
+        partitionStartIndexes[writeIndex] = $0
+        writeIndex += 1
+      }
+    }
+
+    return result
   }
 
 }
