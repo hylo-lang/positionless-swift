@@ -77,7 +77,14 @@ protocol Partitioning: ~Copyable {
   /// Returns the result of passing to `f` the independent projection of `self`.
   mutating func withProjection<R>(_ f: (inout SubSeq.Parts) -> R) -> R
 
-  mutating func withChunks<R>(of: Int, _ f: (inout FixedArray<SubSeq.Parts>) -> R) -> R
+  /// Returns the result of passing to `f` an array of contiguous partitionings
+  /// where each projected partitioning has `partitionCount` of `chunkSize`
+  /// (except the last one, which may have less size in case `partitionCount % chunkSize != 0`).
+  ///
+  /// - Precondition: `chunkSize > 0`.
+  ///
+  /// - Postcondition: `self` adopts the boundaries of projected partitionings.
+  mutating func withChunks<R>(of chunkSize: Int, _ f: (inout FixedArray<SubSeq.Parts>) -> R) -> R
 
 }
 

@@ -52,6 +52,13 @@ protocol MutablePartitioning: Partitioning {
     _ f: (inout MutableSubSeq.MutableParts) -> R
   ) -> R
 
+  /// Returns the result of passing to `f` an array of contiguous mutable partitionings
+  /// where each projected partitioning has `partitionCount` of `chunkSize`
+  /// (except the last one, which may have less size in case `partitionCount % chunkSize != 0`).
+  ///
+  /// - Precondition: `chunkSize > 0`.
+  ///
+  /// - Postcondition: `self` adopts the boundaries of projected partitionings.
   mutating func withMutableChunks<R>(
     of: Int, _ f: (inout FixedArray<MutableSubSeq.MutableParts>) -> R
   )
