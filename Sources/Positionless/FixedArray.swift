@@ -1,5 +1,16 @@
+import Foundation
+
 /// An array whose shape can't be changed. Only elements are mutable.
 struct FixedArray<Element> {
+
+  struct UnsafeElementPointer<T>: @unchecked Sendable {
+    public var pointer: UnsafeMutablePointer<T>
+
+    public init(_ pointer: UnsafeMutablePointer<T>) {
+      self.pointer = pointer
+    }
+  }
+
   /// Actual storage of elements.
   internal var storage: [Element]
 
@@ -22,4 +33,27 @@ struct FixedArray<Element> {
     get { storage[index] }
     set { storage[index] = newValue }
   }
+
+  public mutating func parallelMutatingForEach(_ f: @escaping @Sendable (inout Element) -> Void) {
+    let count = count
+    storage.withUnsafeMutableBufferPointer { buffer in
+      let base = UnsafeElementPointer.init(buffer.baseAddress!)
+      let group = DispatchGroup()
+      for i in 0..<count {
+        group.enter()
+        DispatchQueue.global().async {
+          f(&base.pointer[i])
+          group.leave()
+        }
+      }
+
+      group.wait()
+    }
+  }
+}
+
+extension FixedArray: Sendable
+where
+  Element: Sendable
+{
 }
