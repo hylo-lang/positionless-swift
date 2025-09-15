@@ -1,44 +1,34 @@
-/// Algorithms to split the collection evenly.
-extension Collection {
+/// Algorithms to make partitioning evenly distributed.
+extension Partitioning {
 
-  /// Splits `self` evenly into `parts` non-empty segments, inserting `gapCount`
-  /// empty slots before each segment, and calls `f` with that partitioning.
-  /// After that call `projectionFn` with partitioning of size `prefixCount`.
+  /// Makes the partitioning evenly distributed among non-empty parts with each
+  /// non-empty part is preceeded by `gapCount` empty parts.
   ///
-  /// - Precondition: `parts * (gapCount + 1) >= projectPrefix`.
-  func withPrefixPartsOfSplittingEvenly<R>(
-    in parts: Int, gaps gapCount: Int, projectPrefix prefixCount: Int,
-    _ projectionFn: (inout Parts) -> R, _ f: (inout Parts) -> Void
-  ) -> R {
-    let numElements = count
-    return withParts(count: prefixCount) {
-      let currentParts = $0.partitionCount
-      let totalParts = parts * (gapCount + 1)
-      let additionalParts = totalParts - currentParts
-      $0.withAdditionalParts(additionalParts) { p in
-        p.shiftSections(from: currentParts - 1, to: totalParts - 1)
-        let partSize = numElements / totalParts
-        var numSmallerParts = totalParts - (numElements % totalParts)
-        var remainingElements = numElements
-        var i = totalParts - 1
-        while i >= 0 {
-          var curPartSize = partSize
-          if numSmallerParts > 0 {
-            numSmallerParts -= 1
-          } else {
-            curPartSize += 1
-          }
-          if curPartSize == remainingElements {
-            break
-          }
-          remainingElements -= curPartSize
-          p.grow(part: i - 1, by: remainingElements)
-          p.shiftSections(from: i - 1, to: i - gapCount - 1)
-          i = i - gapCount - 1
-        }
-        f(&p)
+  /// - Precondition: `gapCount >= 0`.
+  ///
+  /// - Postcondition: If gaps can't be evenly distributed, then first non-empty
+  /// part would have less gaps than `gapCount`.
+  mutating func makeEvenlyDistributed(withGapsOf gapCount: Int = 0) {
+    shiftSections(from: 0, to: partitionCount - 1)
+    let numNonEmptyParts = (partitionCount + gapCount) / (gapCount + 1)
+    var remainingElements = self[part: partitionCount - 1].count
+    let partSize = remainingElements / numNonEmptyParts
+    var numSmallerParts = numNonEmptyParts - (remainingElements % numNonEmptyParts)
+    var i = partitionCount - 1
+    while true {
+      var curPartSize = partSize
+      if numSmallerParts > 0 {
+        numSmallerParts -= 1
+      } else {
+        curPartSize += 1
       }
-      return projectionFn(&$0)
+      if curPartSize == remainingElements {
+        break
+      }
+      remainingElements -= curPartSize
+      grow(part: i - 1, by: remainingElements)
+      shiftSections(from: i - 1, to: i - gapCount - 1)
+      i -= gapCount - 1
     }
   }
 
