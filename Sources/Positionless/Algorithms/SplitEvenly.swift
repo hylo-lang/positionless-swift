@@ -28,7 +28,7 @@ extension Partitioning {
       remainingElements -= curPartSize
       grow(part: i - 1, by: remainingElements)
       shiftSections(from: i - 1, to: i - gapCount - 1)
-      i -= gapCount - 1
+      i -= gapCount + 1
     }
   }
 

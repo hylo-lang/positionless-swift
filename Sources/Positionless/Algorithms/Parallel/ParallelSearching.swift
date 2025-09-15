@@ -43,3 +43,47 @@ where
   }
 
 }
+
+extension Collection
+where SubSeq: Sendable {
+
+  /// Splits the collection at the first element that satisfies the given predicate.
+  ///
+  /// - Postcondition:
+  ///   - `part[0]` contains all elements before the first match.
+  ///   - `part[1]` contains the first matching element and all elements after it.
+  func parallelSplitFirst<R>(
+    where predicate: @Sendable @escaping (Element) -> Bool,
+    _ f: (inout Parts) -> R
+  ) -> R {
+    return withParts(count: 2) { p in
+      p.parallelGrowFirst(until: predicate)
+      return f(&p)
+    }
+  }
+
+}
+
+extension MutableCollection
+where SubSeq: Sendable {
+
+  /// Splits the collection at the first element that satisfies the given predicate.
+  ///
+  /// - Postcondition:
+  ///   - `part[0]` contains all elements before the first match.
+  ///   - `part[1]` contains the first matching element and all elements after it.
+  ///
+  /// - Complexity: O(`count`).
+  mutating func parallelMutableSplitFirst<R>(
+    where predicate: @escaping @Sendable (Element) -> Bool,
+    _ f: (inout MutableParts) -> R
+  )
+    -> R
+  {
+    return withMutableParts(count: 2) { p in
+      p.parallelGrowFirst(until: predicate)
+      return f(&p)
+    }
+  }
+
+}
