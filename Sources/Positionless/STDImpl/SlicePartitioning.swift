@@ -98,12 +98,14 @@ extension SlicePartitioning: Partitioning {
     var fixed = FixedArray(partitions)
     let result = f(&fixed)
 
-    var writeIndex = 1
+    var writeIndex = 0
     fixed.storage.forEach { partitioning in
-      partitioning.partitionStartIndexes.dropFirst().dropLast().forEach {
+      partitioning.partitionStartIndexes[...].forEach {
         partitionStartIndexes[writeIndex] = $0
         writeIndex += 1
       }
+      writeIndex -= 1
+      return ()
     }
 
     return result
@@ -216,12 +218,14 @@ where Base: Swift.MutableCollection {
       _writeBackElements(from: part.storage, to: &storage)
     }
 
-    var writeIndex = 1
+    var writeIndex = 0
     fixed.storage.forEach { partitioning in
-      partitioning.partitionStartIndexes.dropFirst().dropLast().forEach {
+      partitioning.partitionStartIndexes[...].forEach {
         partitionStartIndexes[writeIndex] = $0
         writeIndex += 1
       }
+      writeIndex -= 1
+      return ()
     }
 
     return result
